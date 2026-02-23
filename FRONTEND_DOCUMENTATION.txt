@@ -1,0 +1,576 @@
+================================================================================
+                    GPCS MEDIA SYSTEM - DOCUMENTAÇÃO DO FRONTEND
+================================================================================
+
+TECNOLOGIAS UTILIZADAS
+----------------------
+- React 18 + TypeScript
+- Vite (build tool)
+- TailwindCSS (estilização)
+- Lucide React (ícones)
+- Supabase (backend)
+- React Router (navegação)
+
+
+================================================================================
+                                  PÁGINAS
+================================================================================
+
+Localização: src/pages/
+
+PÁGINA              | FICHEIRO                      | DESCRIÇÃO
+--------------------|-------------------------------|---------------------------
+Login               | auth/LoginPage.tsx            | Página de autenticação
+Registo             | auth/RegisterPage.tsx         | Criar nova conta
+Esqueci Senha       | auth/ForgotPasswordPage.tsx   | Recuperação de senha
+Redefinir Senha     | auth/ResetPasswordPage.tsx    | Reset de senha
+Dashboard           | DashboardPage.tsx             | Página inicial com estatísticas
+Media               | media/MediaPage.tsx           | Galeria de ficheiros multimédia
+Utilizadores        | admin/UsersPage.tsx           | Gestão de utilizadores
+Municípios          | admin/MunicipiosPage.tsx      | Gestão de municípios
+Definições          | SettingsPage.tsx              | Configurações do utilizador
+
+
+================================================================================
+                            COMPONENTES UI
+================================================================================
+
+Localização: src/components/ui/
+
+--------------------------------------------------------------------------------
+BUTTON (Botão)
+--------------------------------------------------------------------------------
+Ficheiro: Button.tsx
+
+Importar:
+import Button from './components/ui/Button'
+
+Variantes: primary | secondary | ghost | danger | outline
+Tamanhos: sm | md | lg
+
+Exemplo:
+<Button variant="primary" size="md" loading={false} icon={<Icon />}>
+  Texto do Botão
+</Button>
+
+Props:
+- variant: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline'
+- size: 'sm' | 'md' | 'lg'
+- loading: boolean
+- icon: React.ReactNode
+- disabled: boolean
+
+--------------------------------------------------------------------------------
+CARD (Cartão)
+--------------------------------------------------------------------------------
+Ficheiro: Card.tsx
+
+Importar:
+import Card, { CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './components/ui/Card'
+
+Padding: none | sm | md | lg
+
+Exemplo:
+<Card hover padding="md">
+  <CardHeader>
+    <CardTitle>Título</CardTitle>
+    <CardDescription>Descrição</CardDescription>
+  </CardHeader>
+  <CardContent>Conteúdo</CardContent>
+  <CardFooter>Rodapé</CardFooter>
+</Card>
+
+Props:
+- hover: boolean (efeito hover)
+- padding: 'none' | 'sm' | 'md' | 'lg'
+- className: string
+
+--------------------------------------------------------------------------------
+BADGE (Etiqueta)
+--------------------------------------------------------------------------------
+Ficheiro: Badge.tsx
+
+Importar:
+import Badge, { RoleBadge, FileTypeBadge } from './components/ui/Badge'
+
+Variantes: default | primary | success | warning | error | info
+Tamanhos: sm | md
+
+Exemplos:
+<Badge variant="success" size="md">Texto</Badge>
+<RoleBadge role="superadmin" />
+<FileTypeBadge type="image" />
+
+Mapeamento de Roles:
+- superadmin → variant: error, label: "Super Admin"
+- admin_municipal → variant: warning, label: "Admin Municipal"
+- tecnico → variant: primary, label: "Técnico"
+- leitor → variant: default, label: "Leitor"
+
+Mapeamento de File Types:
+- image → variant: success, label: "Imagem"
+- video → variant: warning, label: "Vídeo"
+- audio → variant: info, label: "Áudio"
+- document → variant: primary, label: "Documento"
+
+--------------------------------------------------------------------------------
+INPUT (Campo de entrada)
+--------------------------------------------------------------------------------
+Ficheiro: Input.tsx
+
+Importar:
+import Input from './components/ui/Input'
+
+Exemplo:
+<Input 
+  label="Email" 
+  type="email" 
+  placeholder="seu@email.com"
+  error="Mensagem de erro"
+  icon={<Mail />}
+/>
+
+Props:
+- label: string
+- error: string
+- icon: React.ReactNode
+- type: string (email, password, text, etc.)
+- placeholder: string
+
+--------------------------------------------------------------------------------
+MODAL (Janela modal)
+--------------------------------------------------------------------------------
+Ficheiro: Modal.tsx
+
+Importar:
+import Modal from './components/ui/Modal'
+
+Tamanhos: sm | md | lg | xl | full
+
+Exemplo:
+<Modal isOpen={true} onClose={() => {}} title="Título" size="md">
+  Conteúdo do modal
+</Modal>
+
+Props:
+- isOpen: boolean
+- onClose: () => void
+- title: string
+- size: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+- showClose: boolean
+
+--------------------------------------------------------------------------------
+TOAST (Notificações)
+--------------------------------------------------------------------------------
+Ficheiro: Toast.tsx
+
+Importar:
+import { useToast } from './components/ui/Toast'
+
+Exemplo:
+const toast = useToast()
+toast.success('Sucesso', 'Mensagem opcional')
+toast.error('Erro', 'Mensagem opcional')
+toast.loading('A carregar...')
+
+Métodos:
+- show(toast: { title, message, type, duration })
+- dismiss(id: string)
+- success(title: string, message?: string)
+- error(title: string, message?: string)
+- loading(title: string, message?: string)
+
+Types: success | error | info | loading
+
+--------------------------------------------------------------------------------
+SPINNER (Indicador de carregamento)
+--------------------------------------------------------------------------------
+Ficheiro: Spinner.tsx
+
+Importar:
+import Spinner, { LoadingScreen } from './components/ui/Spinner'
+
+Tamanhos: sm | md | lg
+
+Exemplos:
+<Spinner size="md" />
+<LoadingScreen message="A carregar..." />
+
+
+================================================================================
+                          COMPONENTES LAYOUT
+================================================================================
+
+Localização: src/components/layout/
+
+--------------------------------------------------------------------------------
+DASHBOARD LAYOUT
+--------------------------------------------------------------------------------
+Ficheiro: DashboardLayout.tsx
+
+Importar:
+import DashboardLayout from './components/layout/DashboardLayout'
+
+Exemplo:
+<DashboardLayout>
+  {/* Conteúdo da página */}
+</DashboardLayout>
+
+--------------------------------------------------------------------------------
+HEADER (Cabeçalho)
+--------------------------------------------------------------------------------
+Ficheiro: Header.tsx
+
+Importar:
+import Header from './components/layout/Header'
+
+Exemplo:
+<Header 
+  title="Dashboard" 
+  subtitle="Bem-vindo" 
+  showUploadButton={true}
+  onUploadClick={() => {}}
+/>
+
+Props:
+- title: string
+- subtitle: string
+- showUploadButton: boolean
+- onUploadClick: () => void
+
+--------------------------------------------------------------------------------
+SIDEBAR (Barra lateral)
+--------------------------------------------------------------------------------
+Ficheiro: Sidebar.tsx
+
+Menu Items:
+- Dashboard (LayoutDashboard icon) → /dashboard
+- Media (Image icon) → /media
+- Utilizadores (Users icon) → /users [requer permissão]
+- Municípios (Building2 icon) → /municipios [requer permissão]
+- Definições (Settings icon) → /settings
+
+Botão de Logout:
+- Terminar Sessão (LogOut icon)
+
+
+================================================================================
+                          COMPONENTES MEDIA
+================================================================================
+
+Localização: src/components/media/
+
+--------------------------------------------------------------------------------
+MEDIA CARD (Cartão de ficheiro)
+--------------------------------------------------------------------------------
+Ficheiro: MediaCard.tsx
+
+Importar:
+import MediaCard from './components/media/MediaCard'
+
+Exemplo:
+<MediaCard 
+  file={mediaFile}
+  onView={(file) => {}}
+  onDelete={(file) => {}}
+  canDelete={true}
+/>
+
+Props:
+- file: MediaFile
+- onView: (file: MediaFile) => void
+- onDelete?: (file: MediaFile) => void
+- canDelete?: boolean
+
+Ícones por tipo:
+- image → Image (verde/emerald)
+- video → Video (âmbar)
+- audio → Music (roxo/purple)
+- document → FileText (azul)
+
+--------------------------------------------------------------------------------
+MEDIA UPLOAD
+--------------------------------------------------------------------------------
+Ficheiro: MediaUpload.tsx
+
+--------------------------------------------------------------------------------
+MEDIA VIEWER
+--------------------------------------------------------------------------------
+Ficheiro: MediaViewer.tsx
+
+
+================================================================================
+                               ÍCONES
+================================================================================
+
+Biblioteca: Lucide React (lucide-react)
+
+Importar:
+import { NomeDoIcone } from 'lucide-react'
+
+ÍCONES DE NAVEGAÇÃO:
+- LayoutDashboard  → Dashboard
+- Menu             → Menu hambúrguer
+- ChevronLeft      → Seta esquerda
+- ArrowUpRight     → Seta diagonal
+
+ÍCONES DE MEDIA:
+- Image            → Imagens
+- Video            → Vídeos
+- Music            → Áudios
+- FileText         → Documentos
+- HardDrive        → Armazenamento
+
+ÍCONES DE AÇÕES:
+- Plus             → Adicionar
+- Upload           → Carregar ficheiro
+- Download         → Descarregar
+- Trash2           → Eliminar
+- Eye              → Ver/Visualizar
+- X                → Fechar
+- Search           → Pesquisar
+
+ÍCONES DE UTILIZADOR:
+- Users            → Utilizadores
+- LogIn            → Entrar
+- LogOut           → Sair
+- Mail             → Email
+- Lock             → Palavra-passe
+- Settings         → Definições
+
+ÍCONES DE STATUS:
+- CheckCircle      → Sucesso
+- AlertCircle      → Erro/Alerta
+- Info             → Informação
+- Loader2          → Carregando (com animação spin)
+- Clock            → Tempo/Actividade
+
+OUTROS:
+- Building2        → Municípios/Edifícios
+- TrendingUp       → Tendências/Estatísticas
+
+
+================================================================================
+                             ESTILOS CSS
+================================================================================
+
+Ficheiro: src/index.css
+
+CLASSES DE EFEITO:
+- .glass              → Efeito vidro/blur
+- .glass-light        → Efeito vidro mais leve
+- .gradient-text      → Texto com gradiente
+- .gradient-primary   → Fundo gradiente azul
+- .gradient-secondary → Fundo gradiente dourado
+- .gradient-dark      → Fundo gradiente escuro
+
+CLASSES DE CARTÃO:
+- .card               → Estilo base de cartão
+- .stats-card         → Cartão de estatísticas (com linha colorida no topo)
+
+CLASSES DE BOTÃO:
+- .btn                → Estilo base de botão
+- .btn-primary        → Botão azul principal
+- .btn-secondary      → Botão cinza secundário
+- .btn-ghost          → Botão transparente
+- .btn-danger         → Botão vermelho de perigo
+
+CLASSES DE INPUT:
+- .input              → Estilo de campo de entrada
+
+CLASSES DE BADGE:
+- .badge              → Estilo base de etiqueta
+- .badge-primary      → Etiqueta azul
+- .badge-success      → Etiqueta verde
+- .badge-warning      → Etiqueta âmbar
+- .badge-error        → Etiqueta vermelha
+
+CLASSES DE SIDEBAR:
+- .sidebar-item       → Item de menu da sidebar
+- .sidebar-item.active → Item activo
+
+CLASSES DE TABELA:
+- .table-container    → Container da tabela
+- .table              → Tabela
+- .table th           → Cabeçalho da tabela
+- .table td           → Célula da tabela
+
+ANIMAÇÕES:
+- .animate-fade-in    → Aparecer suavemente
+- .animate-slide-in   → Deslizar da esquerda
+- .animate-scale-in   → Escalar para dentro
+- .animate-glow       → Brilho pulsante
+- .animate-shimmer    → Efeito shimmer/loading
+- .animate-spin-slow  → Rotação lenta
+
+CORES DE TIPO DE MEDIA:
+- .media-type-image    → Verde (#10b981)
+- .media-type-video    → Âmbar (#f59e0b)
+- .media-type-audio    → Roxo (#8b5cf6)
+- .media-type-document → Azul (#3b82f6)
+
+
+================================================================================
+                    TEXTOS E LABELS EM PORTUGUÊS
+================================================================================
+
+LOGIN / AUTENTICAÇÃO:
+- "Bem-vindo de volta"
+- "Introduza as suas credenciais para aceder"
+- "Email"
+- "seu@email.com"
+- "Palavra-passe"
+- "Lembrar-me"
+- "Esqueceu a palavra-passe?"
+- "Entrar"
+- "Não tem uma conta?"
+- "Registar"
+- "Email não cadastrado ou palavra-passe incorreta."
+
+DASHBOARD:
+- "Olá, {nome}"
+- "Bem-vindo ao GPCS Media System"
+- "Total de Ficheiros"
+- "Imagens"
+- "Vídeos"
+- "Documentos"
+- "Áudios"
+- "Armazenamento"
+- "Ficheiros Recentes"
+- "Ver todos"
+- "Actividade Recente"
+
+ACTIVIDADES:
+- "fez upload de um ficheiro"
+- "descarregou um ficheiro"
+- "eliminou um ficheiro"
+- "iniciou sessão"
+- "terminou sessão"
+
+ESTADOS VAZIOS:
+- "Nenhum ficheiro carregado"
+- "Carregar o primeiro ficheiro"
+- "Nenhuma actividade registada"
+- "Sem descrição"
+
+SIDEBAR:
+- "Dashboard"
+- "Media"
+- "Utilizadores"
+- "Municípios"
+- "Definições"
+- "Terminar Sessão"
+
+ROLES:
+- "Super Admin"
+- "Admin Municipal"
+- "Técnico"
+- "Leitor"
+
+TIPOS DE FICHEIRO:
+- "Imagem"
+- "Vídeo"
+- "Áudio"
+- "Documento"
+
+FOOTER:
+- "© {ano} Gabinete Provincial de Comunicação Social da Huíla."
+- "Todos os direitos reservados. República de Angola."
+
+LOADING:
+- "A carregar..."
+
+FEATURES (Login Page):
+- "Arquivo Digital" → "Armazene e organize todos os seus ficheiros multimédia"
+- "Acesso Controlado" → "Gestão de permissões por município e função"
+- "Pesquisa Rápida" → "Encontre qualquer ficheiro em segundos"
+
+
+================================================================================
+                         ESTRUTURA DE PASTAS
+================================================================================
+
+src/
+├── App.tsx                 # Componente principal com rotas
+├── main.tsx                # Ponto de entrada
+├── index.css               # Estilos globais
+├── App.css                 # Estilos do App
+│
+├── components/
+│   ├── layout/
+│   │   ├── DashboardLayout.tsx
+│   │   ├── Header.tsx
+│   │   └── Sidebar.tsx
+│   │
+│   ├── media/
+│   │   ├── MediaCard.tsx
+│   │   ├── MediaUpload.tsx
+│   │   └── MediaViewer.tsx
+│   │
+│   ├── notifications/
+│   │   └── NotificationsDropdown.tsx
+│   │
+│   └── ui/
+│       ├── Badge.tsx
+│       ├── Button.tsx
+│       ├── Card.tsx
+│       ├── Input.tsx
+│       ├── Modal.tsx
+│       ├── Spinner.tsx
+│       └── Toast.tsx
+│
+├── contexts/
+│   ├── AuthContext.tsx
+│   └── ThemeContext.tsx
+│
+├── lib/
+│   ├── supabase.ts
+│   └── types.ts
+│
+├── pages/
+│   ├── DashboardPage.tsx
+│   ├── SettingsPage.tsx
+│   │
+│   ├── admin/
+│   │   ├── MunicipiosPage.tsx
+│   │   └── UsersPage.tsx
+│   │
+│   ├── auth/
+│   │   ├── ForgotPasswordPage.tsx
+│   │   ├── LoginPage.tsx
+│   │   ├── RegisterPage.tsx
+│   │   └── ResetPasswordPage.tsx
+│   │
+│   └── media/
+│       └── MediaPage.tsx
+│
+└── assets/
+
+
+================================================================================
+                               ROTAS
+================================================================================
+
+PÚBLICAS (não autenticado):
+- /login          → LoginPage
+- /register       → RegisterPage
+- /forgot-password → ForgotPasswordPage
+- /reset-password → ResetPasswordPage
+
+PROTEGIDAS (autenticado):
+- /dashboard      → DashboardPage
+- /media          → MediaPage
+- /settings       → SettingsPage
+
+ADMIN (roles específicos):
+- /users          → UsersPage (superadmin, admin_municipal)
+- /municipios     → MunicipiosPage (superadmin)
+
+REDIRECTS:
+- /               → /dashboard
+- /*              → /dashboard
+
+
+================================================================================
+                          FIM DA DOCUMENTAÇÃO
+================================================================================

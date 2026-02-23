@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-AO">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/images/angola-coat-of-arms.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sistema de Gestão de Media do Gabinete Provincial de Comunicação Social - Arquivo digital e base de dados multimédia institucional" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="author" content="GPCS" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" />
+    <title>GPCS Media System | Gabinete Provincial de Comunicação Social</title>
+  </head>
+  <body>
+    <!-- Anti-FOUC: Apply theme and compact mode before React loads -->
+    <script>
+      (function() {
+        try {
+          // Apply theme
+          var theme = localStorage.getItem('gpcs-theme') || 'system';
+          var isDark = theme === 'dark' || 
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.add(isDark ? 'dark' : 'light');
+          
+          // Apply compact mode
+          if (localStorage.getItem('gpcs-compact-mode') === 'true') {
+            document.documentElement.classList.add('compact');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
