@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { X, FileText, FileSpreadsheet, Settings, Eye, Save, ChevronDown, ChevronUp, Plus, Trash2, Upload, ImageIcon } from 'lucide-react'
+import { X, FileText, FileSpreadsheet, Settings, Eye, Save, ChevronDown, ChevronUp, Plus, Trash2, Upload, ImageIcon, Check } from 'lucide-react'
 import {
     type ReportHeader,
     type ReportColumn,
@@ -59,6 +59,7 @@ export default function ReportExportModal({
         charts: true,
         table: true,
     })
+    const [isHeaderSaved, setIsHeaderSaved] = useState(false)
 
     const updateHeader = (field: keyof ReportHeader, value: string) => {
         setHeader(prev => ({ ...prev, [field]: value }))
@@ -91,8 +92,28 @@ export default function ReportExportModal({
         setLogoError(null)
     }
 
+    const handleFooterLogoUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'footerLogo1DataUrl' | 'footerLogo2DataUrl') => {
+        const file = e.target.files?.[0]
+        if (!file) return
+        if (!file.type.startsWith('image/')) return
+        if (file.size > 2 * 1024 * 1024) {
+            setLogoError('A imagem do rodapé não pode exceder 2 MB.')
+            return
+        }
+        setLogoError(null)
+        const reader = new FileReader()
+        reader.onload = ev => {
+            const dataUrl = ev.target?.result as string
+            setHeader(prev => ({ ...prev, [field]: dataUrl }))
+        }
+        reader.readAsDataURL(file)
+        e.target.value = ''
+    }
+
     const handleSaveHeader = () => {
         saveHeader(header)
+        setIsHeaderSaved(true)
+        setTimeout(() => setIsHeaderSaved(false), 2000)
     }
 
     const addSignatory = () => {
@@ -275,7 +296,10 @@ export default function ReportExportModal({
                                 <div className="border-t border-blue-700 dark:border-blue-500 my-2 w-1/2 mx-auto" />
                                 <p className="text-sm font-bold tracking-widest text-gray-900 dark:text-white uppercase">{header.title}</p>
                                 {header.subtitle && <p className="text-xs italic text-gray-600 dark:text-gray-400">{header.subtitle}</p>}
-                                {(header.period || defaultPeriod) && <p className="text-xs text-gray-500 mt-1">Período: {header.period || defaultPeriod}</p>}
+                                <div className="text-left mt-2">
+                                    {(header.period || defaultPeriod) && <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">Período: {header.period || defaultPeriod}</p>}
+                                    {header.placeDate && <p className="text-xs text-gray-700 dark:text-gray-300">{header.placeDate}</p>}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 gap-3">
@@ -338,6 +362,37 @@ export default function ReportExportModal({
                                     <Field label="Local e Data" value={header.placeDate} onChange={v => updateHeader('placeDate', v)} placeholder="Luanda, Fevereiro de 2026" />
                                 </div>
 
+                                {/* Footer Config */}
+                                <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50 dark:bg-gray-800 space-y-3">
+                                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Configuração do Rodapé</h3>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Texto do Rodapé</label>
+                                        <textarea
+                                            value={header.footerText || ''}
+                                            onChange={e => updateHeader('footerText', e.target.value)}
+                                            rows={5}
+                                            className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                            placeholder="Ex: Praça do Edifício..."
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-3">
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Logo Direita</label>
+                                            {header.footerLogo2DataUrl ? (
+                                                <div className="flex items-center justify-between p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900">
+                                                    <img src={header.footerLogo2DataUrl} alt="Logo 2" className="h-8 object-contain" />
+                                                    <button onClick={() => updateHeader('footerLogo2DataUrl', '')} className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"><Trash2 className="w-4 h-4" /></button>
+                                                </div>
+                                            ) : (
+                                                <label className="flex items-center justify-center p-3 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-blue-50/50 dark:hover:bg-blue-900/10">
+                                                    <span className="text-xs font-medium text-blue-600 dark:text-blue-400 flex items-center gap-1"><Upload className="w-3 h-3" /> Carregar</span>
+                                                    <input type="file" accept="image/*" className="sr-only" onChange={e => handleFooterLogoUpload(e, 'footerLogo2DataUrl')} />
+                                                </label>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {/* Signatories */}
                                 <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
                                     <button
@@ -383,9 +438,21 @@ export default function ReportExportModal({
 
                             <button
                                 onClick={handleSaveHeader}
-                                className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 px-4 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                                disabled={isHeaderSaved}
+                                className={`flex items-center gap-2 text-sm px-4 py-2 rounded-lg transition-colors border ${isHeaderSaved
+                                    ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700'
+                                    : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
+                                    }`}
                             >
-                                <Save className="w-4 h-4" /> Guardar cabeçalho como predefinição
+                                {isHeaderSaved ? (
+                                    <>
+                                        <Check className="w-4 h-4" /> Guardado!
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4" /> Guardar cabeçalho como predefinição
+                                    </>
+                                )}
                             </button>
                         </div>
                     )}
@@ -453,8 +520,10 @@ export default function ReportExportModal({
                                     <div className="border-t border-blue-800 dark:border-blue-500 my-3 w-1/2 mx-auto" />
                                     <p className="font-bold text-sm tracking-widest text-gray-900 dark:text-white uppercase">{header.title}</p>
                                     {header.subtitle && <p className="text-xs italic text-gray-500 dark:text-gray-400 mt-1">{header.subtitle}</p>}
-                                    {header.period && <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Período: {header.period}</p>}
-                                    {header.placeDate && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{header.placeDate}</p>}
+                                    <div className="text-left mt-3">
+                                        {header.period && <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">Período: {header.period}</p>}
+                                        {header.placeDate && <p className="text-xs text-gray-700 dark:text-gray-300">{header.placeDate}</p>}
+                                    </div>
                                 </div>
 
                                 {/* Stats preview */}

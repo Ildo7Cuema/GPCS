@@ -26,6 +26,10 @@ export interface ReportHeader {
     signatories: { role: string; name: string }[]
     /** Optional base64 logo data-URL */
     logoDataUrl?: string
+    /** Footer text data */
+    footerText?: string
+    /** Second footer logo (e.g. Governo Provincial da Huíla) */
+    footerLogo2DataUrl?: string
 }
 
 export interface ReportColumn {
@@ -75,12 +79,14 @@ export const DEFAULT_HEADER: ReportHeader = {
     period: '',
     placeDate: '',
     signatories: [],
-    logoDataUrl: undefined,
+    logoDataUrl: typeof window !== 'undefined' ? window.location.origin + '/images/angola-coat-of-arms.png' : '/images/angola-coat-of-arms.png',
+    footerText: "Praça do Edifício do Governo Provincial da Huíla\nLubango - ANGOLA\nTelf.: (+244) 000 000 000 · (+244) 000 000 000\nFax: (+244) 000 000 000\ngeral@huila.gov.ao · www.huila.gov.ao",
+    footerLogo2DataUrl: typeof window !== 'undefined' ? window.location.origin + '/images/Estacionário_Rodape.png' : '/images/Estacionário_Rodape.png'
 }
 
 // ---- Local Storage Persistence ----
 
-const LS_KEY = 'gpcs_report_header_v1'
+const LS_KEY = 'gpcs_report_header_v5'
 
 export function loadSavedHeader(): ReportHeader {
     try {
@@ -270,18 +276,6 @@ function buildHeaderHTML(h: ReportHeader): string {
             <span style="font-family:Cambria,Georgia,serif;font-size:24px;font-weight:bold;color:#1a3a5c;">A</span>
            </div>`
 
-    const sigHtml = h.signatories.length
-        ? `<div style="margin-top:40px;display:flex;justify-content:space-around;gap:30px;">
-            ${h.signatories.map(s => `
-              <div style="text-align:center;min-width:160px;">
-                <div style="border-top:1px solid #1a3a5c;padding-top:8px;">
-                  <div style="font-family:Cambria,Georgia,serif;font-size:11px;color:#1a3a5c;font-weight:bold;">${s.name}</div>
-                  <div style="font-family:Cambria,Georgia,serif;font-size:10px;color:#4b5563;">${s.role}</div>
-                </div>
-              </div>`).join('')}
-           </div>`
-        : ''
-
     return `
       <div class="report-header">
         ${logo}
@@ -291,10 +285,24 @@ function buildHeaderHTML(h: ReportHeader): string {
         <div class="h-divider"></div>
         <div class="h-title">${h.title}</div>
         ${h.subtitle ? `<div class="h-subtitle">${h.subtitle}</div>` : ''}
+      </div>
+      <div class="h-left-info">
         ${h.period ? `<div class="h-period">Período: ${h.period}</div>` : ''}
         ${h.placeDate ? `<div class="h-place">${h.placeDate}</div>` : ''}
-      </div>
-      ${sigHtml}`
+      </div>`
+}
+
+function buildSignatoriesHTML(h: ReportHeader): string {
+    if (!h.signatories.length) return ''
+    return `<div class="signatories-block" style="margin-top:60px;display:flex;justify-content:space-around;gap:30px;page-break-inside:avoid;">
+            ${h.signatories.map(s => `
+              <div style="text-align:center;min-width:160px;">
+                <div style="border-top:1px solid #1a3a5c;padding-top:8px;">
+                  <div style="font-family:Cambria,Georgia,serif;font-size:11px;color:#1a3a5c;font-weight:bold;">${s.name}</div>
+                  <div style="font-family:Cambria,Georgia,serif;font-size:10px;color:#4b5563;">${s.role}</div>
+                </div>
+              </div>`).join('')}
+           </div>`
 }
 
 function buildTableHTML(columns: ReportColumn[], rows: ReportRow[]): string {
@@ -311,31 +319,38 @@ function buildTableHTML(columns: ReportColumn[], rows: ReportRow[]): string {
 }
 
 const PDF_STYLES = `
-  @page { margin: 18mm 15mm 18mm 15mm; size: A4; }
+  @page { margin: 18mm 15mm 0.5mm 15mm; size: A4; }
   * { box-sizing: border-box; }
   body { font-family: Cambria, Georgia, 'Times New Roman', serif; font-size: 11pt; color: #111; background: #fff; margin: 0; }
-  .report-header { text-align: center; padding: 16px 0 12px; border-bottom: 3px double #1a3a5c; margin-bottom: 18px; }
-  .h-institution { font-size: 15pt; font-weight: bold; letter-spacing: 1px; color: #1a1a2e; margin: 6px 0 2px; }
-  .h-province { font-size: 12pt; font-weight: bold; color: #1a3a5c; margin: 2px 0; }
-  .h-directorate { font-size: 10.5pt; color: #374151; margin: 2px 0 8px; }
-  .h-divider { border: none; border-top: 1.5px solid #1a3a5c; margin: 10px auto; width: 60%; }
-  .h-title { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; color: #1a1a2e; margin: 8px 0 4px; }
-  .h-subtitle { font-size: 11pt; font-style: italic; color: #374151; margin: 2px 0; }
-  .h-period { font-size: 10pt; color: #6b7280; margin: 4px 0 2px; }
-  .h-place { font-size: 10pt; color: #6b7280; margin: 2px 0; }
-  .section-title { font-size: 12pt; font-weight: bold; color: #1a3a5c; border-left: 4px solid #1a3a5c; padding-left: 10px; margin: 22px 0 10px; }
+  .report-header { text-align: center; padding: 16px 0 12px; border-bottom: 3px double #000; margin-bottom: 18px; }
+  .h-institution { font-size: 15pt; font-weight: bold; letter-spacing: 1px; color: #000; margin: 6px 0 2px; }
+  .h-province { font-size: 12pt; font-weight: bold; color: #111; margin: 2px 0; }
+  .h-directorate { font-size: 10.5pt; color: #333; margin: 2px 0 8px; }
+  .h-divider { border: none; border-top: 1.5px solid #000; margin: 10px auto; width: 60%; }
+  .h-title { font-size: 14pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px; color: #000; margin: 8px 0 4px; }
+  .h-subtitle { font-size: 11pt; font-style: italic; color: #333; margin: 2px 0; }
+  .h-left-info { text-align: left; margin-bottom: 20px; }
+  .h-period { font-size: 10.5pt; font-weight: bold; color: #000; margin: 2px 0; }
+  .h-place { font-size: 10.5pt; color: #000; margin: 2px 0; }
+  .section-title { font-size: 12pt; font-weight: bold; color: #000; border-left: 4px solid #000; padding-left: 10px; margin: 22px 0 10px; }
   .data-table { width: 100%; border-collapse: collapse; margin: 10px 0 20px; font-size: 9.5pt; }
-  .data-table thead tr { background: #1a3a5c; color: #fff; }
-  .data-table th { padding: 7px 9px; text-align: left; font-weight: bold; font-size: 9pt; border: 1px solid #1a3a5c; white-space: nowrap; }
+  .data-table thead tr { background: #000; color: #fff; }
+  .data-table th { padding: 7px 9px; text-align: left; font-weight: bold; font-size: 9pt; border: 1px solid #000; white-space: nowrap; }
   .data-table td { padding: 6px 9px; border: 1px solid #d1d5db; vertical-align: top; }
-  .data-table tr.alt td { background: #f0f4fa; }
-  .chart-img { display: block; max-width: 100%; height: auto; margin: 8px auto 16px; border: 1px solid #e5e7eb; border-radius: 4px; }
-  .chart-title { font-size: 11pt; font-weight: bold; color: #1a3a5c; text-align: center; margin: 16px 0 6px; }
-  .footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 8pt; color: #9ca3af; border-top: 1px solid #e5e7eb; padding: 4px 0; }
+  .data-table tr.alt td { background: #f9fafb; }
+  .chart-img { display: block; max-width: 85%; max-height: 220px; object-fit: contain; margin: 8px auto 16px; border: 1px solid #e5e7eb; border-radius: 4px; }
+  .chart-title { font-size: 11pt; font-weight: bold; color: #000; text-align: center; margin: 16px 0 6px; }
   .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0 20px; }
-  .stat-box { background: #f0f4fa; border: 1px solid #d1d5db; border-radius: 6px; padding: 10px; text-align: center; }
-  .stat-box .val { font-size: 20pt; font-weight: bold; color: #1a3a5c; }
-  .stat-box .lbl { font-size: 9pt; color: #6b7280; margin-top: 2px; }
+  .stat-box { background: #f9fafb; border: 1px solid #d1d5db; border-radius: 6px; padding: 10px; text-align: center; }
+  .stat-box .val { font-size: 20pt; font-weight: bold; color: #000; }
+  .stat-box .lbl { font-size: 9pt; color: #666; margin-top: 2px; }
+  
+  .footer { position: fixed; bottom: 0; left: 0; right: 0; border-top: 1px solid #e5e7eb; padding-top: 8px; display: flex; justify-content: space-between; align-items: stretch; font-size: 8.5pt; color: #6b7280; height: 80px; background: #fff; }
+  .footer-left { border-left: 2px solid #e63946; padding-left: 10px; display: flex; flex-direction: column; justify-content: center; line-height: 1.3; }
+  .footer-right { display: flex; align-items: center; gap: 15px; }
+  .f-logo { max-height: 40px; object-fit: contain; }
+  .f-divider { width: 1px; height: 40px; background-color: #6b7280; }
+  
   @media print {
     .no-print { display: none; }
     .data-table thead { display: table-header-group; }
@@ -392,9 +407,19 @@ export function exportToPDF(config: {
         }
     }
 
+    body += buildSignatoriesHTML(header)
+
+    const footerLines = (header.footerText || '').split('\n').map(l => l.trim()).filter(Boolean)
+    const footerHtml = footerLines.map(l => `<div>${l}</div>`).join('')
+
     body += `
       <div class="footer">
-        Gerado em ${dateStr} pelo Sistema GPCS &mdash; Página <span class="pageNum"></span>
+        <div class="footer-left">
+          ${footerHtml}
+        </div>
+        <div class="footer-right">
+          ${header.footerLogo2DataUrl ? `<img src="${header.footerLogo2DataUrl}" class="f-logo" />` : ''}
+        </div>
       </div>`
 
     const win = window.open('', '_blank')
@@ -555,8 +580,9 @@ export function exportToExcel(config: {
         const cells: XlsxCell[] = columns.map(c => {
             const raw = row[c.key]
             const isNum = typeof raw === 'number'
+            const vText = isNum ? raw : (typeof raw === 'boolean' ? (raw ? 'Sim' : 'Não') : String(raw ?? ''))
             return {
-                v: raw ?? '',
+                v: vText,
                 t: isNum ? 'n' as const : 's' as const,
                 size: 10,
                 bg: ri % 2 === 0 ? 'FFF0F4FA' : 'FFFFFFFF',
@@ -699,7 +725,7 @@ export function exportToExcel(config: {
     }
 
     const zipBytes = buildUncompressedZip(files)
-    const blob = new Blob([zipBytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const blob = new Blob([zipBytes as any], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
