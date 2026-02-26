@@ -1,7 +1,6 @@
 import { supabase } from './supabase'
 import { withCache, TTL } from './cache'
-import type { Activity, ActivityFilters, ActivityFormData, Attachment, MediaTypeRecord, Profile } from './types'
-
+import type { Activity, ActivityFilters, ActivityFormData, Attachment, MediaTypeRecord } from './types'
 // ============ Media Types ============
 
 export async function getMediaTypes(): Promise<MediaTypeRecord[]> {
