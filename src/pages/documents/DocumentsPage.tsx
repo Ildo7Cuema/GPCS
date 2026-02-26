@@ -60,6 +60,7 @@ export default function DocumentsPage() {
                 ...filters,
                 limit: PAGE_SIZE,
                 offset: page * PAGE_SIZE,
+                profile,
             })
             setDocuments(data)
             setTotalCount(count)
@@ -69,7 +70,7 @@ export default function DocumentsPage() {
         } finally {
             setLoading(false)
         }
-    }, [filters, page, toast])
+    }, [filters, page, profile, toast])
 
     useEffect(() => {
         loadDocuments()

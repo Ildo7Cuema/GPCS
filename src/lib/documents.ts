@@ -10,16 +10,32 @@ export async function getDocuments(
     const offset = filters?.offset ?? 0
     const sortBy = filters?.sortBy ?? 'created_at'
     const sortOrder = filters?.sortOrder ?? 'desc'
+    const profile = filters?.profile
+
+    const creatorQuery = profile && profile.role !== 'superadmin'
+        ? 'creator:profiles!documents_created_by_fkey!inner(*)'
+        : 'creator:profiles!documents_created_by_fkey(*)'
 
     let query = supabase
         .from('documents')
         .select(`
             *,
             municipio:municipios(*),
-            creator:profiles!documents_created_by_fkey(*)
+            ${creatorQuery}
         `, { count: 'exact' })
         .order(sortBy, { ascending: sortOrder === 'asc' })
         .range(offset, offset + limit - 1)
+
+    // Apply strict access controls via the creator relationship
+    if (profile && profile.role !== 'superadmin') {
+        if (profile.role === 'admin_municipal' || profile.role === 'tecnico' || profile.role === 'leitor') {
+            query = query.eq('creator.source_type', 'municipio').eq('creator.municipio_id', profile.municipio_id)
+        } else if (profile.role === 'direccao_provincial') {
+            query = query.eq('creator.source_type', 'provincial').eq('creator.direccao_provincial_id', profile.direccao_provincial_id)
+        } else if (profile.role === 'departamento_comunicacao' || profile.role === 'departamento_informacao') {
+            query = query.eq('creator.source_type', 'provincial').eq('creator.departamento_provincial_id', profile.departamento_provincial_id)
+        }
+    }
 
     if (filters?.search) {
         query = query.or(`subject.ilike.%${filters.search}%,origin.ilike.%${filters.search}%,destination.ilike.%${filters.search}%,protocol_number.ilike.%${filters.search}%`)

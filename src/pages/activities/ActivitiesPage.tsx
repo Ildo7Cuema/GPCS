@@ -73,6 +73,7 @@ export default function ActivitiesPage() {
                 ...filters,
                 limit: PAGE_SIZE,
                 offset: page * PAGE_SIZE,
+                profile,
             })
             setActivities(data)
             setTotalCount(count)
@@ -82,7 +83,7 @@ export default function ActivitiesPage() {
         } finally {
             setLoading(false)
         }
-    }, [filters, page, toast])
+    }, [filters, page, profile, toast])
 
     useEffect(() => {
         loadActivities()
@@ -160,7 +161,6 @@ export default function ActivitiesPage() {
     }, {})
     const chartLabels = Object.keys(byType)
     const chartValues = Object.values(byType)
-    const COLORS = ['#1a3a5c', '#2d6a4f', '#d62828', '#f77f00', '#4361ee', '#7209b7', '#06d6a0', '#e63946', '#457b9d', '#a8dadc']
 
     const reportCharts = chartLabels.length > 0 ? [{
         title: 'Actividades por Tipo',
@@ -529,16 +529,7 @@ export default function ActivitiesPage() {
                                     <p className="text-gray-900 dark:text-white mt-1">{detailModal.observations}</p>
                                 </div>
                             )}
-                            {detailModal.publication_link && (
-                                <a
-                                    href={detailModal.publication_link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-sm text-blue-400 hover:text-blue-300"
-                                >
-                                    Ver publicação →
-                                </a>
-                            )}
+
                         </div>
                         <div className="mt-6 flex justify-end">
                             <Button variant="secondary" onClick={() => setDetailModal(null)}>

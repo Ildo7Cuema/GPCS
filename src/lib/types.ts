@@ -289,6 +289,7 @@ export interface ActivityFilters {
     month?: number;
     year?: number;
     activity_type?: string;
+    profile?: Profile | null;
 }
 
 export interface ActivityFormData {
@@ -364,6 +365,7 @@ export interface DocumentFilters {
     municipio_id?: string;
     date_from?: string;
     date_to?: string;
+    profile?: Profile | null;
 }
 
 export interface DocumentFormData {

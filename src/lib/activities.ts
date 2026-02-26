@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 import { withCache, TTL } from './cache'
-import type { Activity, ActivityFilters, ActivityFormData, Attachment, MediaTypeRecord } from './types'
+import type { Activity, ActivityFilters, ActivityFormData, Attachment, MediaTypeRecord, Profile } from './types'
 
 // ============ Media Types ============
 
@@ -23,6 +23,7 @@ export async function getActivities(
     const offset = filters?.offset ?? 0
     const sortBy = filters?.sortBy ?? 'date'
     const sortOrder = filters?.sortOrder ?? 'desc'
+    const profile = filters?.profile
 
     let query = supabase
         .from('activities')
@@ -34,6 +35,17 @@ export async function getActivities(
         `, { count: 'exact' })
         .order(sortBy, { ascending: sortOrder === 'asc' })
         .range(offset, offset + limit - 1)
+
+    // Apply strict access controls based on user profile
+    if (profile && profile.role !== 'superadmin') {
+        if (profile.role === 'admin_municipal' || profile.role === 'tecnico' || profile.role === 'leitor') {
+            query = query.eq('source_type', 'municipio').eq('municipio_id', profile.municipio_id)
+        } else if (profile.role === 'direccao_provincial') {
+            query = query.eq('source_type', 'provincial').eq('direccao_provincial_id', profile.direccao_provincial_id)
+        } else if (profile.role === 'departamento_comunicacao' || profile.role === 'departamento_informacao') {
+            query = query.eq('source_type', 'provincial').eq('departamento_provincial_id', profile.departamento_provincial_id)
+        }
+    }
 
     if (filters?.search) {
         query = query.or(`title.ilike.%${filters.search}%,promoter.ilike.%${filters.search}%,observations.ilike.%${filters.search}%`)

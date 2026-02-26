@@ -170,10 +170,10 @@ export default function ActivityFormPage() {
         console.log('[DEBUG] Submitting Activity Form')
         console.log('[DEBUG] User Profile (Full):', JSON.stringify(profile, null, 2))
         console.log('[DEBUG] Provincial IDs in Profile:', {
-            source_type: profile.source_type,
-            governo: profile.governo_provincial_id,
-            direccao: profile.direccao_provincial_id,
-            departamento: profile.departamento_provincial_id
+            source_type: profile?.source_type,
+            governo: profile?.governo_provincial_id,
+            direccao: profile?.direccao_provincial_id,
+            departamento: profile?.departamento_provincial_id
         })
         console.log('[DEBUG] Form Data State:', formData)
 

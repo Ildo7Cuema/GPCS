@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { withCache, cache, TTL } from './cache'
+import { withCache, TTL } from './cache'
 import type { Profile, Municipio, Area, MediaFile, ActivityLog, MediaFilters, UserRole, Notification, NotificationPreferences, GovernoProvincial, DireccaoProvincial, DepartamentoProvincial, SourceType, UserInvitation } from './types'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL

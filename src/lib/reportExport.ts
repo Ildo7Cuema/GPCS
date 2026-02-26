@@ -379,8 +379,6 @@ export function exportToPDF(config: {
     filename?: string
 }): void {
     const { header, sections, filename = 'relatorio' } = config
-    const now = new Date()
-    const dateStr = now.toLocaleDateString('pt-AO', { day: '2-digit', month: 'long', year: 'numeric' })
 
     let body = buildHeaderHTML(header)
 
