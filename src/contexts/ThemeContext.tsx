@@ -14,12 +14,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const [theme, setThemeState] = useState<Theme>(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('gpcs-theme')
-            return (stored as Theme) || 'system'
+            return (stored as Theme) || 'dark'
         }
-        return 'system'
+        return 'dark'
     })
 
     const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark')
+
+    // Apply dark class immediately to avoid FOUC (Flash Of Unstyled Content)
+    // This runs synchronously before first paint
+    if (typeof window !== 'undefined' && !window.document.documentElement.classList.contains('dark') && !window.document.documentElement.classList.contains('light')) {
+        window.document.documentElement.classList.add('dark')
+    }
 
     useEffect(() => {
         const root = window.document.documentElement

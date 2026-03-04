@@ -18,10 +18,13 @@
       (function() {
         try {
           // Apply theme
-          var theme = localStorage.getItem('gpcs-theme') || 'system';
-          var isDark = theme === 'dark' || 
-            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var theme = localStorage.getItem('gpcs-theme') || 'dark';
+          // Default is always dark - design is built for dark mode
+          var isDark = theme !== 'light' && 
+            (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.classList.add(isDark ? 'dark' : 'light');
+          // Ensure background is set immediately to avoid white flash
+          document.documentElement.style.backgroundColor = isDark ? '#0f172a' : '#f8fafc';
           
           // Apply compact mode
           if (localStorage.getItem('gpcs-compact-mode') === 'true') {

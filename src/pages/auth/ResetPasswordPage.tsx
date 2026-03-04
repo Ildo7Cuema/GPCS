@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
 
     if (validSession === null) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0f172a' }}>
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
         )
@@ -63,7 +63,7 @@ export default function ResetPasswordPage() {
 
     if (!validSession) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-8">
+            <div className="min-h-screen flex items-center justify-center p-8" style={{ backgroundColor: '#0f172a' }}>
                 <div className="text-center max-w-md">
                     <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                         <AlertCircle className="w-8 h-8 text-red-400" />
@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen flex relative">
+        <div className="min-h-screen flex relative" style={{ backgroundColor: '#0f172a' }}>
             {/* Left Side - Branding */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800" />
