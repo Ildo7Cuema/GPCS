@@ -114,6 +114,39 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-gray-500);
   }
+
+  /* ====================================================
+     AUTOFILL FIX - Chrome/Safari sobrescreve background
+     Técnica: box-shadow inset simula background escuro
+     O browser NÃO consegue sobrescrever box-shadow
+   ==================================================== */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    /* Fundo escuro simulado via box-shadow inset */
+    -webkit-box-shadow: 0 0 0 1000px rgba(10, 17, 35, 0.97) inset !important;
+    box-shadow: 0 0 0 1000px rgba(10, 17, 35, 0.97) inset !important;
+    /* Texto sempre branco */
+    -webkit-text-fill-color: #f1f5f9 !important;
+    caret-color: #f1f5f9;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
+  /* Fix também para modo claro do sistema - forçar escuro */
+  @media (prefers-color-scheme: light) {
+
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px rgba(10, 17, 35, 0.97) inset !important;
+      box-shadow: 0 0 0 1000px rgba(10, 17, 35, 0.97) inset !important;
+      -webkit-text-fill-color: #f1f5f9 !important;
+      caret-color: #f1f5f9;
+    }
+  }
 }
 
 /* Component Utilities */

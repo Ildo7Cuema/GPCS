@@ -9,7 +9,6 @@ interface CardProps {
 }
 
 export default function Card({ children, className, hover = true, padding = 'md' }: CardProps) {
-    // Responsive padding: smaller on mobile
     const paddingStyles = {
         none: '',
         sm: 'p-3 sm:p-4',
@@ -20,13 +19,15 @@ export default function Card({ children, className, hover = true, padding = 'md'
     return (
         <div
             className={clsx(
-                'rounded-xl bg-white dark:bg-gray-800/40 backdrop-blur-sm border border-gray-200 dark:border-gray-700/50 shadow-sm',
-                'transition-all duration-200',
-                // Hover for desktop, active for mobile touch
-                hover && 'hover:border-gray-300 dark:hover:border-gray-600/50 hover:shadow-md dark:hover:bg-gray-800/60 active:bg-gray-50 dark:active:bg-gray-800/70',
+                'rounded-xl backdrop-blur-sm shadow-sm transition-all duration-200',
+                hover && 'hover:shadow-md active:opacity-90',
                 paddingStyles[padding],
                 className
             )}
+            style={{
+                backgroundColor: 'rgba(30, 41, 59, 0.85)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+            }}
         >
             {children}
         </div>

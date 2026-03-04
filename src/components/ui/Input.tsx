@@ -32,16 +32,20 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                         ref={ref}
                         id={inputId}
                         className={clsx(
-                            // Base styles with mobile-first sizing (min-h-44px, 16px font to prevent iOS zoom)
-                            'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-400 transition-all duration-200',
+                            // Mobile-first sizing (min-h-44px, 16px font to prevent iOS zoom)
+                            'w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 transition-all duration-200',
                             'min-h-[44px] text-base sm:text-sm',
-                            'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
+                            'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                             icon && 'pl-11',
                             error
                                 ? 'border-red-500 focus:border-red-500'
-                                : 'border-gray-700 hover:border-gray-600 focus:border-blue-500',
+                                : 'border-gray-700 hover:border-gray-500 focus:border-blue-500',
                             className
                         )}
+                        style={{
+                            backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                            border: error ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.12)',
+                        }}
                         {...props}
                     />
                 </div>
