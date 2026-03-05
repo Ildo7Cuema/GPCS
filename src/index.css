@@ -75,6 +75,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* Força browser a tratar como tema escuro - previne overrides automáticos em iOS/Android */
+    color-scheme: dark;
   }
 
   body {
@@ -82,11 +84,18 @@
     /* Fallback sólido sempre aplicado - nunca transparente */
     background-color: #0f172a;
     color: #f1f5f9;
+    /* Garantir que a cor propaga corretamente em todos os browsers */
+    -webkit-text-fill-color: initial;
+  }
+
+  html.light {
+    color-scheme: light;
   }
 
   html.light body {
     background-color: #f8fafc;
     color: #0f172a;
+    -webkit-text-fill-color: initial;
   }
 
   html.dark body,
