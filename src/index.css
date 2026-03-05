@@ -872,10 +872,12 @@
 
 /* ============================================
    OVERRIDES GLOBAIS html.dark
-   Corrige padrão bg-white dark:bg-gray-* que NÃO funciona
+   Corrige TODOS os padrões dark:* que NÃO funcionam
    neste sistema que usa html.dark (não classe .dark no pai)
-   Afeta: inputs, selects, textareas, filtros em todas as páginas
+   Cobre: inputs, selects, textareas, cards, tabelas, barras, badges
    ============================================ */
+
+/* --- INPUTS / SELECTS / TEXTAREAS --- */
 html.dark input,
 html:not(.light) input,
 html.dark select,
@@ -887,7 +889,6 @@ html:not(.light) textarea {
   color: #f1f5f9 !important;
 }
 
-/* Placeholder em modo escuro */
 html.dark input::placeholder,
 html:not(.light) input::placeholder,
 html.dark textarea::placeholder,
@@ -895,17 +896,33 @@ html:not(.light) textarea::placeholder {
   color: #6b7280 !important;
 }
 
-/* Opções de select em modo escuro */
 html.dark select option,
 html:not(.light) select option {
-  background-color: #1e293b;
-  color: #f1f5f9;
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
 }
 
-/* Override para divs/seções com bg-gray-50 ou bg-gray-100 (light defaults) */
+/* --- TEXTO: text-gray-900 (títulos invisíveis dentro de Cards) --- */
+html.dark .text-gray-900,
+html:not(.light) .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+
+/* --- TEXTO: text-gray-700 (labels e badges) --- */
+html.dark .text-gray-700,
+html:not(.light) .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+/* --- BARRAS DE PROGRESSO: bg-gray-200 (fundo das progress bars) --- */
+html.dark .bg-gray-200,
+html:not(.light) .bg-gray-200 {
+  background-color: rgba(51, 65, 85, 0.6) !important;
+}
+
+/* --- FUNDOS CLAROS: bg-gray-50 e bg-gray-100 --- */
 html.dark .bg-gray-50,
 html:not(.light) .bg-gray-50 {
-  --tw-bg-opacity: 1;
   background-color: rgba(15, 23, 42, 0.5) !important;
 }
 
@@ -914,23 +931,36 @@ html:not(.light) .bg-gray-100 {
   background-color: rgba(30, 41, 59, 0.6) !important;
 }
 
-/* Badges com bg-gray-100 dark:bg-gray-700 */
-html.dark .text-gray-700,
-html:not(.light) .text-gray-700 {
-  color: #cbd5e1 !important;
-}
-
-/* Override para filtros com border-gray-200 (light) */
+/* --- BORDAS: border-gray-200 (divisores e contornos claros) --- */
 html.dark .border-gray-200,
 html:not(.light) .border-gray-200 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Modo claro - garantir que inputs são brancos */
+/* --- TABELAS: divide-gray-200 e hover --- */
+html.dark .divide-gray-200> :not([hidden])~ :not([hidden]),
+html:not(.light) .divide-gray-200> :not([hidden])~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .hover\:bg-gray-50:hover,
+html:not(.light) .hover\:bg-gray-50:hover {
+  background-color: rgba(30, 41, 59, 0.4) !important;
+}
+
+/* --- MODO CLARO: garantir que inputs/selects são brancos com texto escuro --- */
 html.light input,
 html.light select,
 html.light textarea {
   background-color: #ffffff !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
+}
+
+html.light .text-gray-900 {
+  color: #0f172a !important;
+}
+
+html.light .bg-gray-200 {
+  background-color: #e5e7eb !important;
 }
