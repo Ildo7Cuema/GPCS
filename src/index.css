@@ -216,14 +216,26 @@
 
   /* Cards */
   .card {
-    @apply rounded-xl p-6 bg-white border border-gray-200 shadow-sm transition-all;
+    /* Default dark theme */
+    @apply rounded-xl p-6 border shadow-sm transition-all;
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
   }
 
-  .dark .card {
+  html.light .card {
+    @apply bg-white border-gray-200;
+    color: #0f172a;
+  }
+
+  /* html.dark override - .dark prefix não funciona neste sistema */
+  html.dark .card,
+  html:not(.light) .card {
     background: rgba(30, 41, 59, 0.6);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow: none;
+    color: #f1f5f9;
   }
 
   .card:hover {
@@ -606,14 +618,25 @@
     }
   }
 
-  /* Mobile card for replacing tables */
+  /* Mobile card for replacing tables - default DARK */
   .mobile-card {
-    @apply rounded-xl p-4 bg-white dark:bg-gray-800/40 backdrop-blur-sm border border-gray-200 dark:border-gray-700/50;
-    @apply transition-all duration-200;
+    @apply rounded-xl p-4 backdrop-blur-sm transition-all duration-200;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+  }
+
+  html.light .mobile-card {
+    @apply bg-white border border-gray-200;
+    color: #0f172a;
   }
 
   .mobile-card:active {
-    @apply bg-gray-50 dark:bg-gray-800/60;
+    background: rgba(30, 41, 59, 0.95);
+  }
+
+  html.light .mobile-card:active {
+    @apply bg-gray-50;
   }
 
   /* Stats card mobile improvements */
@@ -845,4 +868,69 @@
   transition-property: padding, margin, gap, font-size;
   transition-duration: 200ms;
   transition-timing-function: ease-out;
+}
+
+/* ============================================
+   OVERRIDES GLOBAIS html.dark
+   Corrige padrão bg-white dark:bg-gray-* que NÃO funciona
+   neste sistema que usa html.dark (não classe .dark no pai)
+   Afeta: inputs, selects, textareas, filtros em todas as páginas
+   ============================================ */
+html.dark input,
+html:not(.light) input,
+html.dark select,
+html:not(.light) select,
+html.dark textarea,
+html:not(.light) textarea {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+/* Placeholder em modo escuro */
+html.dark input::placeholder,
+html:not(.light) input::placeholder,
+html.dark textarea::placeholder,
+html:not(.light) textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Opções de select em modo escuro */
+html.dark select option,
+html:not(.light) select option {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+/* Override para divs/seções com bg-gray-50 ou bg-gray-100 (light defaults) */
+html.dark .bg-gray-50,
+html:not(.light) .bg-gray-50 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(15, 23, 42, 0.5) !important;
+}
+
+html.dark .bg-gray-100,
+html:not(.light) .bg-gray-100 {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+/* Badges com bg-gray-100 dark:bg-gray-700 */
+html.dark .text-gray-700,
+html:not(.light) .text-gray-700 {
+  color: #cbd5e1 !important;
+}
+
+/* Override para filtros com border-gray-200 (light) */
+html.dark .border-gray-200,
+html:not(.light) .border-gray-200 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Modo claro - garantir que inputs são brancos */
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
 }

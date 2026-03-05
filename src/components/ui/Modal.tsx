@@ -55,35 +55,39 @@ export default function Modal({
                 onClick={onClose}
             />
 
-            {/* Modal - flexible height on mobile, adapts to content */}
+            {/* Modal - fundo escuro explícito para garantir legibilidade em todos os dispositivos */}
             <div
                 className={clsx(
-                    'relative w-full bg-white dark:bg-gray-800 shadow-2xl border-t sm:border border-gray-200 dark:border-gray-700/50',
-                    // Mobile: bottom-sheet style with rounded top corners
+                    'relative w-full shadow-2xl',
+                    'border-t sm:border',
                     'rounded-t-2xl sm:rounded-2xl',
                     'animate-scale-in flex flex-col',
-                    // Flexible height: min-height for content, max-height for overflow
-                    // Mobile: up to 85vh to allow some space at top
-                    // Desktop: up to 90vh
                     'max-h-[85vh] sm:max-h-[90vh]',
-                    // Content determines height, not fixed
                     'h-auto',
                     'safe-area-inset-bottom',
                     sizes[size]
                 )}
+                style={{
+                    backgroundColor: '#1e293b',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    color: '#f1f5f9',
+                }}
             >
                 {/* Header */}
                 {(title || showClose) && (
-                    <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700/50 flex-shrink-0">
+                    <div
+                        className="flex items-center justify-between px-4 sm:px-6 py-4 flex-shrink-0 border-b"
+                        style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+                    >
                         {title && (
-                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white pr-4">{title}</h2>
+                            <h2 className="text-lg font-semibold text-white pr-4">{title}</h2>
                         )}
                         {/* Spacer to push close button right when no title */}
                         {!title && <div />}
                         {showClose && (
                             <button
                                 onClick={onClose}
-                                className="p-2 -mr-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-target"
+                                className="p-2 -mr-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors touch-target"
                                 aria-label="Fechar"
                             >
                                 <X className="w-5 h-5" />
@@ -92,7 +96,7 @@ export default function Modal({
                     </div>
                 )}
 
-                {/* Content - scrollable when content overflows */}
+                {/* Content - scrollable quando o conteúdo ultrapassa o limite */}
                 <div className="p-4 sm:p-6 overflow-y-auto flex-1 overscroll-contain">
                     {children}
                 </div>
