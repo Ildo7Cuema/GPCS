@@ -54,7 +54,7 @@ interface CardTitleProps {
 
 export function CardTitle({ children, className }: CardTitleProps) {
     return (
-        <h3 className={clsx('text-lg font-semibold text-gray-900 dark:text-white', className)}>
+        <h3 className={clsx('text-lg font-semibold text-white', className)}>
             {children}
         </h3>
     )
@@ -93,7 +93,10 @@ interface CardFooterProps {
 
 export function CardFooter({ children, className }: CardFooterProps) {
     return (
-        <div className={clsx('mt-4 pt-4 border-t border-gray-200 dark:border-gray-700/50', className)}>
+        <div
+            className={clsx('mt-4 pt-4 border-t', className)}
+            style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+        >
             {children}
         </div>
     )

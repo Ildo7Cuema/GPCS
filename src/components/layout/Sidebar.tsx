@@ -180,7 +180,7 @@ const Sidebar = memo(function Sidebar({
                 <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                     {profile && !collapsed && (
                         <div className="flex items-center gap-3 px-3 py-3 mb-2 animate-fade-in">
-                            <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-full flex items-center justify-center">
                                 <span className="text-sm font-medium text-white">
                                     {profile.full_name?.charAt(0).toUpperCase() || 'U'}
                                 </span>
@@ -270,7 +270,7 @@ const Sidebar = memo(function Sidebar({
                 <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                     {profile && (
                         <div className="flex items-center gap-3 px-3 py-3 mb-2">
-                            <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-full flex items-center justify-center">
                                 <span className="text-sm font-medium text-white">
                                     {profile.full_name?.charAt(0).toUpperCase() || 'U'}
                                 </span>

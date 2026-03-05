@@ -246,8 +246,16 @@
     @apply bg-gray-700 text-white hover:bg-gray-600;
   }
 
+  html.light .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  }
+
   .btn-ghost {
     @apply bg-transparent text-gray-300 hover:bg-gray-800 hover:text-white;
+  }
+
+  html.light .btn-ghost {
+    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
   }
 
   .btn-danger {
@@ -297,21 +305,22 @@
   }
 
   /* Sidebar */
+  /* Default: dark theme */
   .sidebar-item {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100;
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50;
     transition: all var(--transition-fast);
   }
 
-  .dark .sidebar-item {
-    @apply text-gray-400 hover:text-white hover:bg-gray-800/50;
+  html.light .sidebar-item {
+    @apply text-gray-600 hover:text-gray-900 hover:bg-gray-100;
   }
 
   .sidebar-item.active {
-    @apply text-blue-600 bg-blue-50 border-l-2 border-blue-500;
+    @apply text-white bg-blue-600/20 border-l-2 border-blue-400;
   }
 
-  .dark .sidebar-item.active {
-    @apply text-white bg-blue-600/20;
+  html.light .sidebar-item.active {
+    @apply text-blue-700 bg-blue-50 border-blue-600;
   }
 
   /* Stats Card */
@@ -616,6 +625,10 @@
     @apply text-white placeholder-gray-400;
     @apply focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20;
     @apply min-h-[44px];
+  }
+
+  html.light .mobile-search {
+    @apply bg-white border-gray-300 text-gray-900 placeholder-gray-400;
   }
 }
 
