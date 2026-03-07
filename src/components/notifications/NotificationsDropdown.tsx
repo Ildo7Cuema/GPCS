@@ -4,6 +4,7 @@ import { Bell, Check, CheckCheck, Trash2, X, Upload, AlertTriangle, Info, AlertC
 import { clsx } from 'clsx'
 import { useAuth } from '../../contexts/AuthContext'
 import {
+    supabase,
     getNotifications,
     getUnreadNotificationCount,
     markNotificationAsRead,
@@ -57,18 +58,36 @@ export default function NotificationsDropdown() {
     const [loading, setLoading] = useState(false)
     const dropdownRef = useRef<HTMLDivElement>(null)
 
-    // Fetch notifications on mount and periodically
+    // Load initial data and set up Realtime subscription for instant badge updates
     useEffect(() => {
-        if (user) {
-            loadNotifications()
-            loadUnreadCount()
+        if (!user) return
 
-            // Poll for new notifications every 30 seconds
-            const interval = setInterval(() => {
-                loadUnreadCount()
-            }, 30000)
+        loadNotifications()
+        loadUnreadCount()
 
-            return () => clearInterval(interval)
+        // Realtime: listen for new notifications inserted for this user
+        const channel = supabase
+            .channel(`notifications:${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `user_id=eq.${user.id}`,
+                },
+                (payload) => {
+                    const newNotif = payload.new as Notification
+                    // Increment badge immediately
+                    setUnreadCount(prev => prev + 1)
+                    // If dropdown is open, prepend to list
+                    setNotifications(prev => [newNotif, ...prev])
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
         }
     }, [user])
 

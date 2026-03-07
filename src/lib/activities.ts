@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { notifySuperAdmins } from './supabase'
 import { withCache, TTL } from './cache'
 import type { Activity, ActivityFilters, ActivityFormData, Attachment, MediaTypeRecord } from './types'
 // ============ Media Types ============
@@ -112,6 +113,16 @@ export async function createActivity(formData: ActivityFormData, userId: string)
         .single()
 
     if (error) throw error
+
+    // Notify Super Admins (fire-and-forget)
+    notifySuperAdmins(
+        'Nova Actividade Registada',
+        `Uma nova actividade foi registada: "${data.title}"`,
+        'info',
+        '/activities',
+        { activity_id: data.id }
+    ).catch(() => { /* silent */ })
+
     return data as Activity
 }
 
@@ -198,6 +209,16 @@ export async function uploadAttachment(
         .single()
 
     if (error) throw error
+
+    // Notify Super Admins (fire-and-forget)
+    notifySuperAdmins(
+        'Novo Anexo de Actividade',
+        `Um novo ficheiro foi anexado a uma actividade: "${file.name}"`,
+        'upload',
+        '/activities',
+        { activity_id: activityId }
+    ).catch(() => { /* silent */ })
+
     return data as Attachment
 }
 
@@ -253,13 +274,17 @@ export async function exportActivitiesCsv(filters?: ActivityFilters): Promise<st
 
 // ============ Activity Stats ============
 
-export async function getActivityStats(municipioId?: string): Promise<{
+export async function getActivityStats(
+    municipioId?: string,
+    dateFrom?: string,
+    dateTo?: string,
+): Promise<{
     total: number;
     withMedia: number;
     byType: Record<string, number>;
     byMunicipio: { municipio_name: string; count: number }[];
 }> {
-    const cacheKey = `activity:stats:${municipioId || 'all'}`
+    const cacheKey = `activity:stats:${municipioId || 'all'}:${dateFrom || ''}:${dateTo || ''}`
     return withCache(cacheKey, TTL.SHORT, async () => {
         // Use parallel minimal queries: only select columns we actually need
         let baseQuery = supabase
@@ -269,16 +294,22 @@ export async function getActivityStats(municipioId?: string): Promise<{
         if (municipioId) {
             baseQuery = baseQuery.eq('municipio_id', municipioId)
         }
+        if (dateFrom) baseQuery = baseQuery.gte('date', dateFrom)
+        if (dateTo) baseQuery = baseQuery.lte('date', dateTo)
 
         const [totalRes, withMediaRes, dataRes] = await Promise.all([
             (() => {
                 let q = supabase.from('activities').select('*', { count: 'exact', head: true })
                 if (municipioId) q = q.eq('municipio_id', municipioId)
+                if (dateFrom) q = q.gte('date', dateFrom)
+                if (dateTo) q = q.lte('date', dateTo)
                 return q
             })(),
             (() => {
                 let q = supabase.from('activities').select('*', { count: 'exact', head: true }).eq('news_published', true)
                 if (municipioId) q = q.eq('municipio_id', municipioId)
+                if (dateFrom) q = q.gte('date', dateFrom)
+                if (dateTo) q = q.lte('date', dateTo)
                 return q
             })(),
             baseQuery,

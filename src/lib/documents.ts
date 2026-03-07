@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { notifySuperAdmins } from './supabase'
 import type { InstitutionalDocument, DocumentFilters, DocumentFormData, DocumentMovement } from './types'
 
 // ============ Documents ============
@@ -103,6 +104,16 @@ export async function createDocument(formData: DocumentFormData, userId: string)
         .single()
 
     if (error) throw error
+
+    // Notify Super Admins (fire-and-forget)
+    notifySuperAdmins(
+        'Novo Documento Registado',
+        `Um novo documento foi registado: "${data.subject}"`,
+        'info',
+        '/documents',
+        { document_id: data.id, type: data.type }
+    ).catch(() => { /* silent */ })
+
     return data as InstitutionalDocument
 }
 
@@ -213,7 +224,11 @@ export async function addDocumentMovement(
 
 // ============ Document Stats ============
 
-export async function getDocumentStats(municipioId?: string): Promise<{
+export async function getDocumentStats(
+    municipioId?: string,
+    dateFrom?: string,
+    dateTo?: string,
+): Promise<{
     total: number;
     received: number;
     sent: number;
@@ -225,6 +240,8 @@ export async function getDocumentStats(municipioId?: string): Promise<{
     if (municipioId) {
         query = query.eq('municipio_id', municipioId)
     }
+    if (dateFrom) query = query.gte('document_date', dateFrom)
+    if (dateTo) query = query.lte('document_date', dateTo)
 
     const { data, error } = await query
     if (error) throw error
@@ -251,3 +268,4 @@ export async function getDocumentStats(municipioId?: string): Promise<{
         byType,
     }
 }
+

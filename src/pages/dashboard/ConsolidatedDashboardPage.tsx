@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
     BarChart3,
     CalendarCheck,
@@ -38,6 +38,44 @@ interface DashboardStats {
     }
 }
 
+type PeriodFilter = 'diario' | 'mensal' | 'trimestral' | 'semestral' | 'anual'
+
+const PERIOD_OPTIONS: { value: PeriodFilter; label: string }[] = [
+    { value: 'diario', label: 'Diário' },
+    { value: 'mensal', label: 'Mensal' },
+    { value: 'trimestral', label: 'Trimestral' },
+    { value: 'semestral', label: 'Semestral' },
+    { value: 'anual', label: 'Anual' },
+]
+
+function getPeriodDates(period: PeriodFilter): { dateFrom: string; dateTo: string } {
+    const today = new Date()
+    const pad = (n: number) => String(n).padStart(2, '0')
+    const fmt = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+    const dateTo = fmt(today)
+
+    let dateFrom: Date
+    switch (period) {
+        case 'diario':
+            dateFrom = new Date(today)
+            break
+        case 'mensal':
+            dateFrom = new Date(today.getFullYear(), today.getMonth(), 1)
+            break
+        case 'trimestral':
+            dateFrom = new Date(today.getFullYear(), today.getMonth() - 2, 1)
+            break
+        case 'semestral':
+            dateFrom = new Date(today.getFullYear(), today.getMonth() - 5, 1)
+            break
+        case 'anual':
+        default:
+            dateFrom = new Date(today.getFullYear(), 0, 1)
+            break
+    }
+    return { dateFrom: fmt(dateFrom), dateTo }
+}
+
 const STAT_BOX_CLASSES = 'relative overflow-hidden rounded-xl bg-gradient-to-br p-5 border'
 
 export default function ConsolidatedDashboardPage() {
@@ -50,14 +88,17 @@ export default function ConsolidatedDashboardPage() {
     const [selectedMunicipio, setSelectedMunicipio] = useState<string>(
         permissions.scopeToMunicipio ? profile?.municipio_id || '' : ''
     )
+    const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>('mensal')
     const [showExportModal, setShowExportModal] = useState(false)
+
+    const { dateFrom, dateTo } = useMemo(() => getPeriodDates(selectedPeriod), [selectedPeriod])
 
     const loadStats = useCallback(async () => {
         setLoading(true)
         try {
             const [actStats, docStats] = await Promise.all([
-                getActivityStats(selectedMunicipio || undefined),
-                getDocumentStats(selectedMunicipio || undefined),
+                getActivityStats(selectedMunicipio || undefined, dateFrom, dateTo),
+                getDocumentStats(selectedMunicipio || undefined, dateFrom, dateTo),
             ])
             setStats({ activities: actStats, documents: docStats })
         } catch (err) {
@@ -65,7 +106,7 @@ export default function ConsolidatedDashboardPage() {
         } finally {
             setLoading(false)
         }
-    }, [selectedMunicipio])
+    }, [selectedMunicipio, dateFrom, dateTo])
 
     useEffect(() => {
         loadStats()
@@ -153,31 +194,51 @@ export default function ConsolidatedDashboardPage() {
 
             <div className="p-4 sm:p-6 space-y-6">
                 {/* Filter + Export Bar */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    {!permissions.scopeToMunicipio && (
-                        <Card>
-                            <div className="flex items-center gap-4">
-                                <label className="text-sm font-medium text-gray-400">Filtrar por município:</label>
-                                <select
-                                    value={selectedMunicipio}
-                                    onChange={(e) => setSelectedMunicipio(e.target.value)}
-                                    className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                >
-                                    <option value="">Todos os municípios</option>
-                                    {municipios.map(m => (
-                                        <option key={m.id} value={m.id}>{m.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </Card>
-                    )}
-                    <button
-                        onClick={() => setShowExportModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-400 bg-blue-900/20 border border-blue-700/40 rounded-xl hover:bg-blue-900/40 transition-colors"
-                    >
-                        <FileBarChart2 className="w-4 h-4" />
-                        Exportar Relatório Consolidado
-                    </button>
+                <div className="flex flex-col gap-3">
+                    {/* Row 1: Period pills */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-medium text-gray-500 uppercase tracking-wider mr-1">Período:</span>
+                        {PERIOD_OPTIONS.map(opt => (
+                            <button
+                                key={opt.value}
+                                onClick={() => setSelectedPeriod(opt.value)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border ${selectedPeriod === opt.value
+                                        ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
+                                        : 'bg-gray-800/60 text-gray-400 border-gray-700/50 hover:bg-gray-700/60 hover:text-gray-200'
+                                    }`}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Row 2: Municipality filter + export */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        {!permissions.scopeToMunicipio && (
+                            <Card>
+                                <div className="flex items-center gap-4">
+                                    <label className="text-sm font-medium text-gray-400">Filtrar por município:</label>
+                                    <select
+                                        value={selectedMunicipio}
+                                        onChange={(e) => setSelectedMunicipio(e.target.value)}
+                                        className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                    >
+                                        <option value="">Todos os municípios</option>
+                                        {municipios.map(m => (
+                                            <option key={m.id} value={m.id}>{m.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </Card>
+                        )}
+                        <button
+                            onClick={() => setShowExportModal(true)}
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-400 bg-blue-900/20 border border-blue-700/40 rounded-xl hover:bg-blue-900/40 transition-colors"
+                        >
+                            <FileBarChart2 className="w-4 h-4" />
+                            Exportar Relatório Consolidado
+                        </button>
+                    </div>
                 </div>
 
                 {/* Summary Stats */}

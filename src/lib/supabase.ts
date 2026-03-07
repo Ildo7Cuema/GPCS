@@ -517,6 +517,15 @@ export async function uploadMediaFile(
     // Log activity
     await logActivity(uploaderId, 'upload', { file_id: data.id, title, source_type: sourceType })
 
+    // Notify Super Admins (fire-and-forget)
+    notifySuperAdmins(
+        'Novo Ficheiro Enviado',
+        `Um novo ficheiro foi enviado: "${title}"`,
+        'upload',
+        '/media',
+        { file_id: data.id, file_type: fileType }
+    ).catch(() => { /* silent */ })
+
     return data as MediaFile
 }
 
@@ -550,6 +559,15 @@ export async function deleteMediaFile(id: string, filePath: string, userId: stri
 
     // Log activity
     await logActivity(userId, 'delete', { file_id: id })
+
+    // Notify Super Admins (fire-and-forget)
+    notifySuperAdmins(
+        'Ficheiro Eliminado',
+        'Um ficheiro foi removido do arquivo de media.',
+        'warning',
+        '/media',
+        { file_id: id }
+    ).catch(() => { /* silent */ })
 }
 
 // ============ Users/Profiles ============
@@ -791,6 +809,35 @@ export async function createNotification(
     }
 
     return data as Notification
+}
+
+/**
+ * Sends a notification to all Super Admin users.
+ * Fire-and-forget: errors are swallowed so they never block the caller.
+ */
+export async function notifySuperAdmins(
+    title: string,
+    message: string,
+    type: 'info' | 'success' | 'warning' | 'error' | 'upload' | 'security' = 'info',
+    actionUrl?: string,
+    metadata?: Record<string, unknown>
+): Promise<void> {
+    try {
+        const { data: admins, error } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('role', 'superadmin')
+
+        if (error || !admins?.length) return
+
+        await Promise.all(
+            admins.map(admin =>
+                createNotification(admin.id, title, message, type, actionUrl, metadata)
+            )
+        )
+    } catch (err) {
+        console.error('[notifySuperAdmins] error:', err)
+    }
 }
 
 // ============ Notification Preferences ============
