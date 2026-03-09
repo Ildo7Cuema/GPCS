@@ -328,7 +328,7 @@ export interface ActivityFormData {
 // ============ Documents Module Types ============
 
 export type DocumentType = 'oficio' | 'convite' | 'solicitacao' | 'circular' | 'programa' | 'nota';
-export type DocumentDirection = 'received' | 'sent';
+export type DocumentDirection = 'received' | 'sent' | 'interno';
 export type DocumentStatus = 'em_tramitacao' | 'respondido' | 'arquivado';
 
 export interface InstitutionalDocument {
@@ -407,6 +407,7 @@ export const documentStatusLabels: Record<DocumentStatus, string> = {
 export const documentDirectionLabels: Record<DocumentDirection, string> = {
     received: 'Recebido',
     sent: 'Enviado',
+    interno: 'Interno',
 };
 
 // Role permissions helper
