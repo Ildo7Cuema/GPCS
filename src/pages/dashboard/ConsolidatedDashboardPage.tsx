@@ -147,7 +147,7 @@ export default function ConsolidatedDashboardPage() {
 
     const reportStats = [
         { label: 'Total Actividades', value: actStats.total },
-        { label: 'Cobertura Mediática', value: `${mediaCoverage}%` },
+        { label: 'Cobertura de Imprensa', value: `${mediaCoverage}%` },
         { label: 'Docs Recebidos', value: docStats.received },
         { label: 'Docs Enviados', value: docStats.sent },
     ]
@@ -203,8 +203,8 @@ export default function ConsolidatedDashboardPage() {
                                 key={opt.value}
                                 onClick={() => setSelectedPeriod(opt.value)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border ${selectedPeriod === opt.value
-                                        ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
-                                        : 'bg-gray-800/60 text-gray-400 border-gray-700/50 hover:bg-gray-700/60 hover:text-gray-200'
+                                    ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
+                                    : 'bg-gray-800/60 text-gray-400 border-gray-700/50 hover:bg-gray-700/60 hover:text-gray-200'
                                     }`}
                             >
                                 {opt.label}
@@ -262,7 +262,7 @@ export default function ConsolidatedDashboardPage() {
                     <div className={`${STAT_BOX_CLASSES} from-emerald-500/10 to-emerald-600/5 border-emerald-500/20`}>
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Cobertura Mediática</p>
+                                <p className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Cobertura de Imprensa</p>
                                 <p className="text-3xl font-bold text-white mt-2">{mediaCoverage}%</p>
                             </div>
                             <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">

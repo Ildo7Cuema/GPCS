@@ -241,6 +241,7 @@ export interface Activity {
     municipio_id: string | null;
     title: string;
     activity_type: string;
+    other_activity_type: string | null; // Novo: Especificação para "Outro" tipo
     date: string;
     time: string | null;
     promoter: string | null;
@@ -250,7 +251,9 @@ export interface Activity {
     minister_name: string | null;
     governor_name: string | null;
     administrator_name: string | null;
-    media_type_id: string | null;
+    media_type_id: string | null; // legado — mantido para retrocompatibilidade
+    media_type_ids: string[] | null; // novo: múltiplos tipos de mídia
+    other_media_type: string | null; // texto livre quando "Outro" é selecionado
     media_outlet: string | null;
     news_published: boolean;
     program_page: string | null;
@@ -266,7 +269,8 @@ export interface Activity {
     created_by: string | null;
     // Joined
     municipio?: Municipio;
-    media_type?: MediaTypeRecord;
+    media_type?: MediaTypeRecord;   // legado — join do tipo único
+    media_types_data?: MediaTypeRecord[]; // novo: join dos tipos múltiplos
     creator?: Profile;
     attachments?: Attachment[];
 }
@@ -296,6 +300,7 @@ export interface ActivityFormData {
     municipio_id: string | null;
     title: string;
     activity_type: string;
+    other_activity_type?: string;     // Novo: Especificação para "Outro" tipo
     date: string;
     time?: string;
     promoter?: string;
@@ -305,7 +310,9 @@ export interface ActivityFormData {
     governor_name?: string;
     administrator_present: boolean;
     administrator_name?: string;
-    media_type_id?: string;
+    media_type_id?: string;    // legado — mantido para retrocompatibilidade
+    media_type_ids?: string[]; // novo: lista de IDs de tipos de mídia
+    other_media_type?: string; // texto livre quando "Outro" é selecionado
     media_outlet?: string;
     news_published: boolean;
     program_page?: string;

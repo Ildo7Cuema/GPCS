@@ -94,15 +94,41 @@ export async function getActivity(id: string): Promise<Activity | null> {
         console.error('Error fetching activity:', error)
         return null
     }
-    return data as Activity
+
+    const activity = data as Activity
+
+    // Resolver nomes dos tipos de mídia (array)
+    if (activity.media_type_ids && activity.media_type_ids.length > 0) {
+        const { data: mtData } = await supabase
+            .from('media_types')
+            .select('*')
+            .in('id', activity.media_type_ids)
+        activity.media_types_data = (mtData as MediaTypeRecord[]) || []
+    } else if (activity.media_type) {
+        // fallback legado: se só existe o tipo singular, normalizar para array
+        activity.media_types_data = [activity.media_type]
+        activity.media_type_ids = activity.media_type_id ? [activity.media_type_id] : []
+    } else {
+        activity.media_types_data = []
+    }
+
+    return activity
 }
 
 export async function createActivity(formData: ActivityFormData, userId: string): Promise<Activity> {
     console.log('[DEBUG] createActivity payload:', { formData, userId })
+
+    // Normalizar: garantir que media_type_ids está sempre preenchido
+    const mediaTypeIds = formData.media_type_ids && formData.media_type_ids.length > 0
+        ? formData.media_type_ids
+        : (formData.media_type_id ? [formData.media_type_id] : [])
+
     const { data, error } = await supabase
         .from('activities')
         .insert({
             ...formData,
+            media_type_ids: mediaTypeIds,
+            media_type_id: mediaTypeIds[0] || null, // manter legado com o primeiro
             created_by: userId,
         })
         .select(`
@@ -127,9 +153,22 @@ export async function createActivity(formData: ActivityFormData, userId: string)
 }
 
 export async function updateActivity(id: string, formData: Partial<ActivityFormData>): Promise<Activity> {
+    // Normalizar media_type_ids
+    const mediaTypeIds = formData.media_type_ids && formData.media_type_ids.length > 0
+        ? formData.media_type_ids
+        : (formData.media_type_id ? [formData.media_type_id] : undefined)
+
+    const payload = {
+        ...formData,
+        ...(mediaTypeIds !== undefined && {
+            media_type_ids: mediaTypeIds,
+            media_type_id: mediaTypeIds[0] || null,
+        }),
+    }
+
     const { data, error } = await supabase
         .from('activities')
-        .update(formData)
+        .update(payload)
         .eq('id', id)
         .select(`
             *,
@@ -236,12 +275,25 @@ export async function deleteAttachment(id: string, filePath: string): Promise<vo
 // ============ CSV Export ============
 
 export async function exportActivitiesCsv(filters?: ActivityFilters): Promise<string> {
-    const { data } = await getActivities({ ...filters, limit: 10000, offset: 0 })
+    // Buscar actividades + todos os media_types para resolver nomes
+    const [{ data }, mediaTypesRaw] = await Promise.all([
+        getActivities({ ...filters, limit: 10000, offset: 0 }),
+        getMediaTypes(),
+    ])
+
+    const mtMap = new Map<string, string>(mediaTypesRaw.map(mt => [mt.id, mt.name]))
+
+    const resolveMediaTypes = (activity: Activity): string => {
+        if (activity.media_type_ids && activity.media_type_ids.length > 0) {
+            return activity.media_type_ids.map(id => mtMap.get(id) || id).join(', ')
+        }
+        return activity.media_type?.name || ''
+    }
 
     const headers = [
         'Título', 'Tipo', 'Data', 'Hora', 'Município', 'Promotor',
         'Ministro Presente', 'Governador Presente', 'Administrador Presente',
-        'Tipo de Mídia', 'Órgão de Comunicação', 'Notícia Publicada',
+        'Tipo(s) de Mídia', 'Órgão de Comunicação', 'Notícia Publicada',
         'Página do Programa', 'Link da Publicação', 'Observações'
     ]
 
@@ -252,11 +304,10 @@ export async function exportActivitiesCsv(filters?: ActivityFilters): Promise<st
         a.time || '',
         a.municipio?.name || '',
         a.promoter || '',
-        a.promoter || '',
         a.minister_present ? `Sim (${a.minister_name || ''})` : 'Não',
         a.governor_present ? `Sim (${a.governor_name || ''})` : 'Não',
         a.administrator_present ? `Sim (${a.administrator_name || ''})` : 'Não',
-        a.media_type?.name || '',
+        resolveMediaTypes(a),
         a.media_outlet || '',
         a.news_published ? 'Sim' : 'Não',
         a.program_page || '',

@@ -134,25 +134,36 @@ export default function ActivitiesPage() {
         { header: 'Ministro', key: 'minister', width: 14 },
         { header: 'Governador', key: 'governor', width: 14 },
         { header: 'Administrador', key: 'administrator', width: 14 },
+        { header: 'Tipo(s) de Mídia', key: 'media_types', width: 22 },
         { header: 'Órgão de Comunicação', key: 'media_outlet', width: 22 },
         { header: 'Notícia Publicada', key: 'news_published', width: 16 },
         { header: 'Observações', key: 'observations', width: 28 },
     ]
 
-    const reportRows = activities.map(a => ({
-        title: a.title,
-        activity_type: a.activity_type,
-        date: format(new Date(a.date + 'T00:00:00'), 'dd/MM/yyyy', { locale: pt }),
-        time: a.time || '—',
-        municipio: a.municipio?.name || '—',
-        promoter: a.promoter || '—',
-        minister: a.minister_present ? `Sim${a.minister_name ? ` (${a.minister_name})` : ''}` : 'Não',
-        governor: a.governor_present ? `Sim${a.governor_name ? ` (${a.governor_name})` : ''}` : 'Não',
-        administrator: a.administrator_present ? `Sim${a.administrator_name ? ` (${a.administrator_name})` : ''}` : 'Não',
-        media_outlet: a.media_outlet || '—',
-        news_published: a.news_published ? 'Sim' : 'Não',
-        observations: a.observations || '—',
-    }))
+    const reportRows = activities.map(a => {
+        const mediaTypesLabel = a.media_types_data && a.media_types_data.length > 0
+            ? a.media_types_data.map(mt => mt.name).join(', ')
+            : (a.media_type?.name || '—')
+        const formatNames = (names?: string | null) => names ? names.split(' | ').join(', ') : ''
+
+        return {
+            title: a.title,
+            activity_type: a.activity_type === 'Outro' && a.other_activity_type
+                ? `Outro (${a.other_activity_type})`
+                : a.activity_type,
+            date: format(new Date(a.date + 'T00:00:00'), 'dd/MM/yyyy', { locale: pt }),
+            time: a.time || '—',
+            municipio: a.municipio?.name || '—',
+            promoter: a.promoter || '—',
+            minister: a.minister_present ? `Sim${a.minister_name ? ` (${formatNames(a.minister_name)})` : ''}` : 'Não',
+            governor: a.governor_present ? `Sim${a.governor_name ? ` (${formatNames(a.governor_name)})` : ''}` : 'Não',
+            administrator: a.administrator_present ? `Sim${a.administrator_name ? ` (${formatNames(a.administrator_name)})` : ''}` : 'Não',
+            media_types: mediaTypesLabel,
+            media_outlet: a.media_outlet || '—',
+            news_published: a.news_published ? 'Sim' : 'Não',
+            observations: a.observations || '—',
+        }
+    })
 
     // Chart: activities by type
     const byType = activities.reduce<Record<string, number>>((acc, a) => {
@@ -480,7 +491,11 @@ export default function ActivitiesPage() {
                         <div className="space-y-4">
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{detailModal.title}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">{detailModal.activity_type}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    {detailModal.activity_type === 'Outro' && detailModal.other_activity_type
+                                        ? `Outro (${detailModal.other_activity_type})`
+                                        : detailModal.activity_type}
+                                </p>
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-sm">
                                 <div>
@@ -500,27 +515,79 @@ export default function ActivitiesPage() {
                                     <p className="text-gray-900 dark:text-white">{detailModal.promoter || '—'}</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-3 gap-3 text-sm">
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${detailModal.minister_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
-                                    <span className="text-gray-700 dark:text-gray-300">Ministro</span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <div className={`w-2 h-2 rounded-full ${detailModal.minister_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                                        <span className="text-gray-700 dark:text-gray-300 font-medium">Ministro</span>
+                                    </div>
+                                    {detailModal.minister_present && detailModal.minister_name && (
+                                        <ul className="pl-4 list-disc text-gray-600 dark:text-gray-400 marker:text-gray-400">
+                                            {detailModal.minister_name.split(' | ').filter(Boolean).map((n, i) => (
+                                                <li key={i}>{n}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${detailModal.governor_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
-                                    <span className="text-gray-700 dark:text-gray-300">Governador</span>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <div className={`w-2 h-2 rounded-full ${detailModal.governor_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                                        <span className="text-gray-700 dark:text-gray-300 font-medium">Governador</span>
+                                    </div>
+                                    {detailModal.governor_present && detailModal.governor_name && (
+                                        <ul className="pl-4 list-disc text-gray-600 dark:text-gray-400 marker:text-gray-400">
+                                            {detailModal.governor_name.split(' | ').filter(Boolean).map((n, i) => (
+                                                <li key={i}>{n}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${detailModal.administrator_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
-                                    <span className="text-gray-700 dark:text-gray-300">Administrador</span>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <div className={`w-2 h-2 rounded-full ${detailModal.administrator_present ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                                        <span className="text-gray-700 dark:text-gray-300 font-medium">Administrador</span>
+                                    </div>
+                                    {detailModal.administrator_present && detailModal.administrator_name && (
+                                        <ul className="pl-4 list-disc text-gray-600 dark:text-gray-400 marker:text-gray-400">
+                                            {detailModal.administrator_name.split(' | ').filter(Boolean).map((n, i) => (
+                                                <li key={i}>{n}</li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </div>
-                            {detailModal.media_outlet && (
+                            {(detailModal.media_outlet || (detailModal.media_type_ids && detailModal.media_type_ids.length > 0) || detailModal.media_type) && (
                                 <div className="text-sm">
-                                    <span className="text-gray-500 dark:text-gray-400">Cobertura mediática:</span>
-                                    <p className="text-gray-900 dark:text-white">
-                                        {detailModal.media_type?.name} — {detailModal.media_outlet}
-                                        {detailModal.news_published && ' ✓ Publicada'}
-                                    </p>
+                                    <span className="text-gray-500 dark:text-gray-400 block mb-1">Cobertura mediática:</span>
+                                    {/* Badges de tipos de mídia */}
+                                    {(detailModal.media_types_data && detailModal.media_types_data.length > 0) ? (
+                                        <div className="flex flex-wrap gap-1.5 mb-1">
+                                            {detailModal.media_types_data.map(mt => {
+                                                const isOutro = mt.name.toLowerCase() === 'outro'
+                                                return (
+                                                    <span key={mt.id} className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${isOutro ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
+                                                        {mt.name}
+                                                    </span>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : detailModal.media_type ? (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/20 text-blue-400 mb-1">
+                                            {detailModal.media_type.name}
+                                        </span>
+                                    ) : null}
+                                    {/* Texto personalizado para "Outro" */}
+                                    {detailModal.other_media_type && (
+                                        <p className="text-xs text-amber-400/80 mb-1">
+                                            Outro: <span className="font-medium">{detailModal.other_media_type}</span>
+                                        </p>
+                                    )}
+                                    {detailModal.media_outlet && (
+                                        <p className="text-gray-900 dark:text-white">
+                                            {detailModal.media_outlet}
+                                            {detailModal.news_published && <span className="ml-1 text-emerald-400">✓ Publicada</span>}
+                                        </p>
+                                    )}
                                 </div>
                             )}
                             {detailModal.observations && (

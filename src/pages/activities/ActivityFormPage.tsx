@@ -70,7 +70,8 @@ export default function ActivityFormPage() {
         minister_name: '',
         governor_name: '',
         administrator_name: '',
-        media_type_id: '',
+        media_type_ids: [],
+        other_media_type: '',
         media_outlet: '',
         news_published: false,
         program_page: '',
@@ -101,6 +102,11 @@ export default function ActivityFormPage() {
                 getAttachments(id),
             ]).then(([activity, attachments]) => {
                 if (activity) {
+                    // Normalizar media_type_ids: se só existir o campo legado, converter para array
+                    const mediaTypeIds = activity.media_type_ids && activity.media_type_ids.length > 0
+                        ? activity.media_type_ids
+                        : (activity.media_type_id ? [activity.media_type_id] : [])
+
                     setFormData({
                         municipio_id: activity.municipio_id || '',
                         title: activity.title,
@@ -114,7 +120,8 @@ export default function ActivityFormPage() {
                         governor_name: activity.governor_name || '',
                         administrator_present: activity.administrator_present,
                         administrator_name: activity.administrator_name || '',
-                        media_type_id: activity.media_type_id || '',
+                        media_type_ids: mediaTypeIds,
+                        other_media_type: activity.other_media_type || '',
                         media_outlet: activity.media_outlet || '',
                         news_published: activity.news_published,
                         program_page: activity.program_page || '',
@@ -195,10 +202,13 @@ export default function ActivityFormPage() {
             // Clean up empty optional fields
             const cleanData = {
                 ...formData,
-                municipio_id: formData.municipio_id || null, // Convert empty string to null if allowed
+                municipio_id: formData.municipio_id || null,
                 time: formData.time || undefined,
                 promoter: formData.promoter || undefined,
-                media_type_id: formData.media_type_id || undefined,
+                media_type_ids: formData.media_type_ids && formData.media_type_ids.length > 0 ? formData.media_type_ids : undefined,
+                media_type_id: formData.media_type_ids && formData.media_type_ids.length > 0 ? formData.media_type_ids[0] : undefined,
+                other_media_type: formData.other_media_type || undefined,
+                other_activity_type: formData.activity_type === 'Outro' ? (formData.other_activity_type || undefined) : undefined,
                 media_outlet: formData.media_outlet || undefined,
                 program_page: formData.program_page || undefined,
                 publication_link: formData.publication_link || undefined,
@@ -293,21 +303,44 @@ export default function ActivityFormPage() {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Tipo de Actividade <span className="text-red-400">*</span>
-                                </label>
-                                <select
-                                    required
-                                    value={formData.activity_type}
-                                    onChange={(e) => updateField('activity_type', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                >
-                                    <option value="">Seleccionar tipo</option>
-                                    {ACTIVITY_TYPES.map(t => (
-                                        <option key={t} value={t}>{t}</option>
-                                    ))}
-                                </select>
+                            <div className={formData.activity_type === 'Outro' ? 'sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4' : ''}>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Tipo de Actividade <span className="text-red-400">*</span>
+                                    </label>
+                                    <select
+                                        required
+                                        value={formData.activity_type}
+                                        onChange={(e) => {
+                                            updateField('activity_type', e.target.value)
+                                            if (e.target.value !== 'Outro') {
+                                                updateField('other_activity_type', '')
+                                            }
+                                        }}
+                                        className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                    >
+                                        <option value="">Seleccionar tipo</option>
+                                        {ACTIVITY_TYPES.map(t => (
+                                            <option key={t} value={t}>{t}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {formData.activity_type === 'Outro' && (
+                                    <div className="animate-in fade-in slide-in-from-top-1 duration-200">
+                                        <label className="block text-sm font-medium text-amber-500 dark:text-amber-400 mb-1">
+                                            Especifique o Tipo <span className="text-red-400">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.other_activity_type || ''}
+                                            onChange={(e) => updateField('other_activity_type', e.target.value)}
+                                            className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-amber-300 dark:border-amber-500/50 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 placeholder-gray-400"
+                                            placeholder="Ex: Workshop, Seminário, Avaliação..."
+                                            autoFocus
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             <div>
@@ -387,56 +420,150 @@ export default function ActivityFormPage() {
                                     label: 'Administrador Presente',
                                     placeholder: 'Nome do Administrador'
                                 },
-                            ].map(({ key, nameKey, label, placeholder }) => (
-                                <div
-                                    key={key}
-                                    className={`p-3 rounded-lg border transition-all ${formData[key]
-                                        ? 'bg-blue-50/50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-800'
-                                        : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
-                                        }`}
-                                >
-                                    <label className="flex items-center gap-3 cursor-pointer select-none">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData[key]}
-                                            onChange={(e) => updateField(key, e.target.checked)}
-                                            className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-blue-500/40"
-                                        />
-                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
-                                    </label>
+                            ].map(({ key, nameKey, label, placeholder }) => {
+                                // Process multiple names (stored as "Name 1 | Name 2 | Name 3")
+                                const currentNames = (formData[nameKey] || '').split(' | ')
+                                const name1 = currentNames[0] || ''
+                                const name2 = currentNames[1] || ''
+                                const name3 = currentNames[2] || ''
 
-                                    {formData[key] && (
-                                        <div className="mt-3 pl-7">
+                                const updateMultiName = (index: number, val: string) => {
+                                    const newNames = [...currentNames]
+                                    // Ensure array exists up to index
+                                    while (newNames.length <= index) newNames.push('')
+                                    newNames[index] = val
+                                    // Joining non-empty parts with separator
+                                    const finalString = newNames.filter(n => n.trim() !== '').join(' | ')
+                                    updateField(nameKey, finalString)
+                                }
+
+                                return (
+                                    <div
+                                        key={key}
+                                        className={`p-3 rounded-lg border transition-all ${formData[key]
+                                            ? 'bg-blue-50/50 border-blue-200 dark:bg-blue-900/10 dark:border-blue-800'
+                                            : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'
+                                            }`}
+                                    >
+                                        <label className="flex items-center gap-3 cursor-pointer select-none">
                                             <input
-                                                type="text"
-                                                value={formData[nameKey] || ''}
-                                                onChange={(e) => updateField(nameKey, e.target.value)}
-                                                className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 animate-in fade-in slide-in-from-top-1 duration-200"
-                                                placeholder={placeholder}
+                                                type="checkbox"
+                                                checked={formData[key]}
+                                                onChange={(e) => updateField(key, e.target.checked)}
+                                                className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-500 focus:ring-blue-500/40"
                                             />
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
+                                        </label>
+
+                                        {formData[key] && (
+                                            <div className="mt-3 pl-7 flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                <input
+                                                    type="text"
+                                                    value={name1}
+                                                    onChange={(e) => updateMultiName(0, e.target.value)}
+                                                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                                    placeholder={`${placeholder} (Titular ou Representante)`}
+                                                    required={true}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={name2}
+                                                    onChange={(e) => updateMultiName(1, e.target.value)}
+                                                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                                    placeholder={`${placeholder} 2 (Opcional)`}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={name3}
+                                                    onChange={(e) => updateMultiName(2, e.target.value)}
+                                                    className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                                    placeholder={`${placeholder} 3 (Opcional)`}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
                         </div>
                     </Card>
 
                     {/* Media Coverage */}
                     <Card>
-                        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">Cobertura Mediática</h3>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-4">Cobertura de Imprensa</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Mídia</label>
-                                <select
-                                    value={formData.media_type_id || ''}
-                                    onChange={(e) => updateField('media_type_id', e.target.value)}
-                                    className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                >
-                                    <option value="">Nenhum</option>
-                                    {mediaTypes.map(mt => (
-                                        <option key={mt.id} value={mt.id}>{mt.name}</option>
-                                    ))}
-                                </select>
+                            <div className="sm:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipo(s) de Mídia</label>
+                                {/* Pills multi-select — "Outro" sempre no fim */}
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {[
+                                        ...mediaTypes.filter(mt => mt.name.toLowerCase() !== 'outro'),
+                                        ...mediaTypes.filter(mt => mt.name.toLowerCase() === 'outro'),
+                                    ].map(mt => {
+                                        const isSelected = (formData.media_type_ids || []).includes(mt.id)
+                                        const isOutro = mt.name.toLowerCase() === 'outro'
+                                        return (
+                                            <button
+                                                key={mt.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    const current = formData.media_type_ids || []
+                                                    const next = isSelected
+                                                        ? current.filter(id => id !== mt.id)
+                                                        : [...current, mt.id]
+                                                    updateField('media_type_ids', next)
+                                                    // Limpar campo "Outro" se desmarcar
+                                                    if (isSelected && isOutro) {
+                                                        updateField('other_media_type', '')
+                                                    }
+                                                }}
+                                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 select-none ${isSelected
+                                                    ? isOutro
+                                                        ? 'bg-amber-500/15 border-amber-500/50 text-amber-400 shadow-sm ring-1 ring-amber-500/20'
+                                                        : 'bg-blue-500/15 border-blue-500/50 text-blue-400 dark:text-blue-300 shadow-sm ring-1 ring-blue-500/20'
+                                                    : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-blue-400/40 hover:text-blue-400'
+                                                    }`}
+                                            >
+                                                {isSelected && (
+                                                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isOutro ? 'bg-amber-400' : 'bg-blue-400'}`} />
+                                                )}
+                                                {mt.name}
+                                                {isSelected && (
+                                                    <X className={`w-3 h-3 ml-0.5 ${isOutro ? 'text-amber-400/70' : 'text-blue-400/70'}`} />
+                                                )}
+                                            </button>
+                                        )
+                                    })}
+                                    {mediaTypes.length === 0 && (
+                                        <span className="text-xs text-gray-400">A carregar tipos...</span>
+                                    )}
+                                </div>
+
+                                {/* Campo condicional para "Outro" */}
+                                {mediaTypes.some(mt =>
+                                    mt.name.toLowerCase() === 'outro' &&
+                                    (formData.media_type_ids || []).includes(mt.id)
+                                ) && (
+                                        <div className="mt-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                                            <label className="block text-xs font-medium text-amber-400/80 mb-1">
+                                                Especifique o outro tipo de mídia
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={formData.other_media_type || ''}
+                                                onChange={(e) => updateField('other_media_type', e.target.value)}
+                                                className="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-amber-400/30 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-400/30 placeholder-gray-400"
+                                                placeholder="Ex: Podcast, Newsletter, Blog..."
+                                                autoFocus
+                                            />
+                                        </div>
+                                    )}
+
+                                {/* Resumo dos seleccionados */}
+                                {(formData.media_type_ids || []).length > 0 && (
+                                    <p className="text-xs text-blue-400/80 mt-1.5">
+                                        {(formData.media_type_ids || []).length} tipo(s) seleccionado(s)
+                                    </p>
+                                )}
                             </div>
 
                             <div>
