@@ -65,7 +65,7 @@ const Sidebar = memo(function Sidebar({
         },
         {
             icon: Image,
-            label: 'Media',
+            label: 'Acervo Digital',
             href: '/media',
             visible: true,
         },

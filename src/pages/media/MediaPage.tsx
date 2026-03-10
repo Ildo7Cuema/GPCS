@@ -249,7 +249,7 @@ export default function MediaPage() {
         return (
             <DashboardLayout>
                 <Header
-                    title="Media"
+                    title="Acervo Digital"
                     subtitle="A carregar..."
                     showUploadButton={permissions.canUpload}
                     onUploadClick={() => setShowUpload(true)}
@@ -264,7 +264,7 @@ export default function MediaPage() {
     return (
         <DashboardLayout>
             <Header
-                title="Media"
+                title="Acervo Digital"
                 subtitle={`${totalCount} ficheiros`}
                 showUploadButton={permissions.canUpload}
                 onUploadClick={() => setShowUpload(true)}
