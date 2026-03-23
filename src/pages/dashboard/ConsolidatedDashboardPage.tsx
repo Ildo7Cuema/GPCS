@@ -76,7 +76,7 @@ function getPeriodDates(period: PeriodFilter): { dateFrom: string; dateTo: strin
     return { dateFrom: fmt(dateFrom), dateTo }
 }
 
-const STAT_BOX_CLASSES = 'relative overflow-hidden rounded-xl bg-gradient-to-br p-5 border'
+const STAT_BOX_CLASSES = 'relative overflow-hidden rounded-xl bg-white p-5 border border-slate-200 shadow-sm'
 
 export default function ConsolidatedDashboardPage() {
     const { profile } = useAuth()
@@ -204,7 +204,7 @@ export default function ConsolidatedDashboardPage() {
                                 onClick={() => setSelectedPeriod(opt.value)}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border ${selectedPeriod === opt.value
                                     ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20'
-                                    : 'bg-gray-800/60 text-gray-400 border-gray-700/50 hover:bg-gray-700/60 hover:text-gray-200'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-800'
                                     }`}
                             >
                                 {opt.label}
@@ -217,11 +217,11 @@ export default function ConsolidatedDashboardPage() {
                         {!permissions.scopeToMunicipio && (
                             <Card>
                                 <div className="flex items-center gap-4">
-                                    <label className="text-sm font-medium text-gray-400">Filtrar por município:</label>
+                                    <label className="text-sm font-medium text-slate-600">Filtrar por município:</label>
                                     <select
                                         value={selectedMunicipio}
                                         onChange={(e) => setSelectedMunicipio(e.target.value)}
-                                        className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                                        className="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                                     >
                                         <option value="">Todos os municípios</option>
                                         {municipios.map(m => (
@@ -233,7 +233,7 @@ export default function ConsolidatedDashboardPage() {
                         )}
                         <button
                             onClick={() => setShowExportModal(true)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-400 bg-blue-900/20 border border-blue-700/40 rounded-xl hover:bg-blue-900/40 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors"
                         >
                             <FileBarChart2 className="w-4 h-4" />
                             Exportar Relatório Consolidado
@@ -246,14 +246,14 @@ export default function ConsolidatedDashboardPage() {
                     <div className={`${STAT_BOX_CLASSES} from-blue-500/10 to-blue-600/5 border-blue-500/20`}>
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-medium text-blue-400 uppercase tracking-wider">Total Actividades</p>
-                                <p className="text-3xl font-bold text-white mt-2">{actStats.total}</p>
+                                <p className="text-xs font-medium text-blue-700 uppercase tracking-wider">Total Actividades</p>
+                                <p className="text-3xl font-bold text-slate-800 mt-2">{actStats.total}</p>
                             </div>
                             <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                                <CalendarCheck className="w-5 h-5 text-blue-400" />
+                                <CalendarCheck className="w-5 h-5 text-blue-600" />
                             </div>
                         </div>
-                        <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                        <div className="mt-3 flex items-center gap-1 text-xs text-slate-500">
                             <TrendingUp className="w-3 h-3" />
                             <span>{Object.keys(actStats.byType).length} tipos registados</span>
                         </div>
@@ -262,14 +262,14 @@ export default function ConsolidatedDashboardPage() {
                     <div className={`${STAT_BOX_CLASSES} from-emerald-500/10 to-emerald-600/5 border-emerald-500/20`}>
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Cobertura de Imprensa</p>
-                                <p className="text-3xl font-bold text-white mt-2">{mediaCoverage}%</p>
+                                <p className="text-xs font-medium text-emerald-700 uppercase tracking-wider">Cobertura de Imprensa</p>
+                                <p className="text-3xl font-bold text-slate-800 mt-2">{mediaCoverage}%</p>
                             </div>
                             <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                                <Tv className="w-5 h-5 text-emerald-400" />
+                                <Tv className="w-5 h-5 text-emerald-600" />
                             </div>
                         </div>
-                        <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                        <div className="mt-3 flex items-center gap-1 text-xs text-slate-500">
                             <span>{actStats.withMedia} de {actStats.total} com publicação</span>
                         </div>
                     </div>
@@ -277,14 +277,14 @@ export default function ConsolidatedDashboardPage() {
                     <div className={`${STAT_BOX_CLASSES} from-amber-500/10 to-amber-600/5 border-amber-500/20`}>
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-medium text-amber-400 uppercase tracking-wider">Documentos Recebidos</p>
-                                <p className="text-3xl font-bold text-white mt-2">{docStats.received}</p>
+                                <p className="text-xs font-medium text-amber-700 uppercase tracking-wider">Documentos Recebidos</p>
+                                <p className="text-3xl font-bold text-slate-800 mt-2">{docStats.received}</p>
                             </div>
                             <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                                <ArrowDownLeft className="w-5 h-5 text-amber-400" />
+                                <ArrowDownLeft className="w-5 h-5 text-amber-600" />
                             </div>
                         </div>
-                        <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                        <div className="mt-3 flex items-center gap-1 text-xs text-slate-500">
                             <span>de {docStats.total} documentos totais</span>
                         </div>
                     </div>
@@ -292,14 +292,14 @@ export default function ConsolidatedDashboardPage() {
                     <div className={`${STAT_BOX_CLASSES} from-purple-500/10 to-purple-600/5 border-purple-500/20`}>
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-xs font-medium text-purple-400 uppercase tracking-wider">Documentos Enviados</p>
-                                <p className="text-3xl font-bold text-white mt-2">{docStats.sent}</p>
+                                <p className="text-xs font-medium text-purple-700 uppercase tracking-wider">Documentos Enviados</p>
+                                <p className="text-3xl font-bold text-slate-800 mt-2">{docStats.sent}</p>
                             </div>
                             <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                                <ArrowUpRight className="w-5 h-5 text-purple-400" />
+                                <ArrowUpRight className="w-5 h-5 text-purple-600" />
                             </div>
                         </div>
-                        <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                        <div className="mt-3 flex items-center gap-1 text-xs text-slate-500">
                             <span>{docStats.total} documentos processados</span>
                         </div>
                     </div>
@@ -310,7 +310,7 @@ export default function ConsolidatedDashboardPage() {
                     {/* Activity Types */}
                     <Card>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                                 <BarChart3 className="w-4 h-4 text-blue-400" />
                                 Actividades por Tipo
                             </h3>
@@ -326,10 +326,10 @@ export default function ConsolidatedDashboardPage() {
                                         return (
                                             <div key={type}>
                                                 <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-sm text-gray-700 dark:text-gray-300">{type}</span>
-                                                    <span className="text-sm font-medium text-gray-900 dark:text-white">{count}</span>
+                                                    <span className="text-sm text-slate-600">{type}</span>
+                                                    <span className="text-sm font-semibold text-slate-800">{count}</span>
                                                 </div>
-                                                <div className="w-full bg-gray-200 dark:bg-gray-700/50 rounded-full h-2">
+                                                <div className="w-full bg-slate-200 rounded-full h-2">
                                                     <div
                                                         className="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full transition-all duration-500"
                                                         style={{ width: `${pct}%` }}
@@ -345,7 +345,7 @@ export default function ConsolidatedDashboardPage() {
                     {/* Document Status */}
                     <Card>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                                 <FileStack className="w-4 h-4 text-amber-400" />
                                 Estado dos Documentos
                             </h3>
@@ -371,13 +371,13 @@ export default function ConsolidatedDashboardPage() {
                                         return (
                                             <div key={status}>
                                                 <div className="flex items-center justify-between mb-1">
-                                                    <span className="text-sm text-gray-700 dark:text-gray-300">{statusLabels[status] || status}</span>
+                                                    <span className="text-sm text-slate-600">{statusLabels[status] || status}</span>
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-xs text-gray-500">{pct}%</span>
-                                                        <span className="text-sm font-medium text-gray-900 dark:text-white">{count}</span>
+                                                        <span className="text-sm font-semibold text-slate-800">{count}</span>
                                                     </div>
                                                 </div>
-                                                <div className="w-full bg-gray-200 dark:bg-gray-700/50 rounded-full h-2">
+                                                <div className="w-full bg-slate-200 rounded-full h-2">
                                                     <div
                                                         className={`bg-gradient-to-r ${statusColors[status] || 'from-gray-500 to-gray-400'} h-2 rounded-full transition-all duration-500`}
                                                         style={{ width: `${pct}%` }}
@@ -395,7 +395,7 @@ export default function ConsolidatedDashboardPage() {
                 {!permissions.scopeToMunicipio && actStats.byMunicipio.length > 0 && (
                     <Card>
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
                                 <Users className="w-4 h-4 text-purple-400" />
                                 Actividades por Município
                             </h3>
@@ -403,24 +403,24 @@ export default function ConsolidatedDashboardPage() {
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
-                                    <tr className="border-b border-gray-200 dark:border-gray-700/50">
-                                        <th className="text-left px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">#</th>
-                                        <th className="text-left px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Município</th>
-                                        <th className="text-right px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actividades</th>
-                                        <th className="text-left px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/3">Distribuição</th>
+                                    <tr className="border-b border-slate-200">
+                                        <th className="text-left px-4 py-2 text-xs font-medium text-slate-500 uppercase tracking-wider">#</th>
+                                        <th className="text-left px-4 py-2 text-xs font-medium text-slate-500 uppercase tracking-wider">Município</th>
+                                        <th className="text-right px-4 py-2 text-xs font-medium text-slate-500 uppercase tracking-wider">Actividades</th>
+                                        <th className="text-left px-4 py-2 text-xs font-medium text-slate-500 uppercase tracking-wider w-1/3">Distribuição</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200 dark:divide-gray-700/50">
+                                <tbody className="divide-y divide-slate-200">
                                     {actStats.byMunicipio.slice(0, 10).map((item, i) => {
                                         const pct = Math.round((item.count / actStats.total) * 100)
                                         return (
-                                            <tr key={item.municipio_name} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                                            <tr key={item.municipio_name} className="hover:bg-slate-50">
                                                 <td className="px-4 py-2.5 text-sm text-gray-500">{i + 1}</td>
-                                                <td className="px-4 py-2.5 text-sm font-medium text-gray-900 dark:text-white">{item.municipio_name}</td>
-                                                <td className="px-4 py-2.5 text-sm text-right font-semibold text-gray-900 dark:text-white">{item.count}</td>
+                                                <td className="px-4 py-2.5 text-sm font-medium text-slate-800">{item.municipio_name}</td>
+                                                <td className="px-4 py-2.5 text-sm text-right font-semibold text-slate-800">{item.count}</td>
                                                 <td className="px-4 py-2.5">
                                                     <div className="flex items-center gap-2">
-                                                        <div className="flex-1 bg-gray-200 dark:bg-gray-700/50 rounded-full h-1.5">
+                                                        <div className="flex-1 bg-slate-200 rounded-full h-1.5">
                                                             <div
                                                                 className="bg-gradient-to-r from-purple-500 to-purple-400 h-1.5 rounded-full transition-all duration-500"
                                                                 style={{ width: `${pct}%` }}

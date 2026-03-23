@@ -55,7 +55,7 @@ export default function Modal({
                 onClick={onClose}
             />
 
-            {/* Modal - fundo escuro explícito para garantir legibilidade em todos os dispositivos */}
+            {/* Modal */}
             <div
                 className={clsx(
                     'relative w-full shadow-2xl',
@@ -68,26 +68,26 @@ export default function Modal({
                     sizes[size]
                 )}
                 style={{
-                    backgroundColor: '#1e293b',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                    color: '#f1f5f9',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
+                    color: '#1e293b',
                 }}
             >
                 {/* Header */}
                 {(title || showClose) && (
                     <div
                         className="flex items-center justify-between px-4 sm:px-6 py-4 flex-shrink-0 border-b"
-                        style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+                        style={{ borderColor: '#e2e8f0' }}
                     >
                         {title && (
-                            <h2 className="text-lg font-semibold text-white pr-4">{title}</h2>
+                            <h2 className="text-lg font-semibold text-slate-800 pr-4">{title}</h2>
                         )}
                         {/* Spacer to push close button right when no title */}
                         {!title && <div />}
                         {showClose && (
                             <button
                                 onClick={onClose}
-                                className="p-2 -mr-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors touch-target"
+                                className="p-2 -mr-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors touch-target"
                                 aria-label="Fechar"
                             >
                                 <X className="w-5 h-5" />

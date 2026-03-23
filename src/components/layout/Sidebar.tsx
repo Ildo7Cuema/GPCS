@@ -121,25 +121,25 @@ const Sidebar = memo(function Sidebar({
                     collapsed ? 'w-20' : 'w-64'
                 )}
                 style={{
-                    backgroundColor: '#0f172a',
-                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                 }}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: '#e2e8f0' }}>
                     <Link to="/dashboard" className="flex items-center gap-3">
                         <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
                             <img src="/images/angola-coat-of-arms.png" alt="GPCS Logo" className="w-10 h-10 object-contain" />
                         </div>
                         {!collapsed && (
-                            <span className="font-semibold text-white text-lg animate-fade-in">
+                            <span className="font-semibold text-slate-800 text-lg animate-fade-in">
                                 GPCS
                             </span>
                         )}
                     </Link>
                     <button
                         onClick={onToggle}
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors touch-target"
+                        className="p-2 text-gray-500 hover:text-slate-800 hover:bg-gray-100 rounded-lg transition-colors touch-target"
                         aria-label={collapsed ? 'Expandir menu' : 'Colapsar menu'}
                     >
                         {collapsed ? (
@@ -177,19 +177,19 @@ const Sidebar = memo(function Sidebar({
                 </nav>
 
                 {/* User Section */}
-                <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: '#e2e8f0' }}>
                     {profile && !collapsed && (
                         <div className="flex items-center gap-3 px-3 py-3 mb-2 animate-fade-in">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-white">
+                                <span className="text-sm font-semibold text-white">
                                     {profile.full_name?.charAt(0).toUpperCase() || 'U'}
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-white truncate">
+                                <p className="text-sm font-medium text-slate-800 truncate">
                                     {profile.full_name || 'Utilizador'}
                                 </p>
-                                <p className="text-xs text-gray-400 truncate capitalize">
+                                <p className="text-xs text-gray-500 truncate capitalize">
                                     {profile.role?.replace('_', ' ')}
                                 </p>
                             </div>
@@ -200,7 +200,7 @@ const Sidebar = memo(function Sidebar({
                         onClick={handleLogout}
                         className={clsx(
                             'flex items-center gap-3 w-full px-3 py-3 rounded-lg touch-target',
-                            'text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200'
+                            'text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200'
                         )}
                     >
                         <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -218,23 +218,23 @@ const Sidebar = memo(function Sidebar({
                     mobileOpen ? 'translate-x-0' : '-translate-x-full'
                 )}
                 style={{
-                    backgroundColor: '#0f172a',
-                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    backgroundColor: '#ffffff',
+                    borderColor: '#e2e8f0',
                 }}
             >
                 {/* Mobile Header */}
-                <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: '#e2e8f0' }}>
                     <Link to="/dashboard" className="flex items-center gap-3" onClick={handleNavClick}>
                         <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
                             <img src="/images/angola-coat-of-arms.png" alt="GPCS Logo" className="w-10 h-10 object-contain" />
                         </div>
-                        <span className="font-semibold text-white text-lg">
+                        <span className="font-semibold text-slate-800 text-lg">
                             GPCS
                         </span>
                     </Link>
                     <button
                         onClick={onMobileClose}
-                        className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors touch-target"
+                        className="p-2 text-gray-500 hover:text-slate-800 hover:bg-gray-100 rounded-lg transition-colors touch-target"
                         aria-label="Fechar menu"
                     >
                         <X className="w-5 h-5" />
@@ -267,19 +267,19 @@ const Sidebar = memo(function Sidebar({
                 </nav>
 
                 {/* Mobile User Section */}
-                <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="p-3 border-t safe-area-inset-bottom" style={{ borderColor: '#e2e8f0' }}>
                     {profile && (
                         <div className="flex items-center gap-3 px-3 py-3 mb-2">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-blue-900 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-white">
+                                <span className="text-sm font-semibold text-white">
                                     {profile.full_name?.charAt(0).toUpperCase() || 'U'}
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-white truncate">
+                                <p className="text-sm font-medium text-slate-800 truncate">
                                     {profile.full_name || 'Utilizador'}
                                 </p>
-                                <p className="text-xs text-gray-400 truncate capitalize">
+                                <p className="text-xs text-gray-500 truncate capitalize">
                                     {profile.role?.replace('_', ' ')}
                                 </p>
                             </div>
@@ -290,7 +290,7 @@ const Sidebar = memo(function Sidebar({
                         onClick={handleLogout}
                         className={clsx(
                             'flex items-center gap-3 w-full px-3 py-3 rounded-lg touch-target',
-                            'text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200'
+                            'text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200'
                         )}
                     >
                         <LogOut className="w-5 h-5 flex-shrink-0" />

@@ -17,7 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 {label && (
                     <label
                         htmlFor={inputId}
-                        className="block text-sm font-medium text-gray-300 mb-2"
+                        className="block text-sm font-medium text-slate-700 mb-2"
                     >
                         {label}
                     </label>
@@ -33,27 +33,27 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                         id={inputId}
                         className={clsx(
                             // Mobile-first sizing (min-h-44px, 16px font to prevent iOS zoom)
-                            'w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 transition-all duration-200',
+                            'w-full px-4 py-3 rounded-lg text-slate-800 placeholder-slate-400 transition-all duration-200',
                             'min-h-[44px] text-base sm:text-sm',
                             'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                             icon && 'pl-11',
                             error
                                 ? 'border-red-500 focus:border-red-500'
-                                : 'border-gray-700 hover:border-gray-500 focus:border-blue-500',
+                                : 'border-slate-300 hover:border-slate-400 focus:border-blue-500',
                             className
                         )}
                         style={{
-                            backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                            border: error ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.12)',
+                            backgroundColor: '#ffffff',
+                            border: error ? '1px solid #ef4444' : '1px solid #cbd5e1',
                         }}
                         {...props}
                     />
                 </div>
                 {error && (
-                    <p className="mt-1.5 text-sm text-red-400">{error}</p>
+                    <p className="mt-1.5 text-sm text-red-600">{error}</p>
                 )}
                 {helperText && !error && (
-                    <p className="mt-1.5 text-sm text-gray-500">{helperText}</p>
+                    <p className="mt-1.5 text-sm text-slate-500">{helperText}</p>
                 )}
             </div>
         )

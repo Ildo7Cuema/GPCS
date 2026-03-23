@@ -90,18 +90,18 @@ function ToastItem({ toast, onDismiss }: { toast: Toast & { isExiting?: boolean 
     return (
         <div
             className={clsx(
-                "pointer-events-auto min-w-[300px] max-w-md bg-gray-800 border border-gray-700/50 rounded-lg shadow-xl p-4 flex items-start gap-3 transition-all duration-300",
+                "pointer-events-auto min-w-[300px] max-w-md bg-white border border-slate-200 rounded-lg shadow-lg p-4 flex items-start gap-3 transition-all duration-300",
                 toast.isExiting ? "opacity-0 translate-x-full" : "animate-slide-in-right opacity-100 translate-x-0"
             )}
         >
             <div className="mt-0.5">{icons[toast.type]}</div>
             <div className="flex-1">
-                <h4 className="text-sm font-medium text-white">{toast.title}</h4>
-                {toast.message && <p className="text-sm text-gray-400 mt-1">{toast.message}</p>}
+                <h4 className="text-sm font-medium text-slate-800">{toast.title}</h4>
+                {toast.message && <p className="text-sm text-slate-500 mt-1">{toast.message}</p>}
             </div>
             <button
                 onClick={() => onDismiss(toast.id)}
-                className="text-gray-500 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-slate-700 transition-colors"
             >
                 <X className="w-4 h-4" />
             </button>

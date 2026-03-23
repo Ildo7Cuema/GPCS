@@ -19,14 +19,14 @@ export default function Card({ children, className, hover = true, padding = 'md'
     return (
         <div
             className={clsx(
-                'rounded-xl backdrop-blur-sm shadow-sm transition-all duration-200',
+                'rounded-xl shadow-sm transition-all duration-200',
                 hover && 'hover:shadow-md active:opacity-90',
                 paddingStyles[padding],
                 className
             )}
             style={{
-                backgroundColor: 'rgba(30, 41, 59, 0.85)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                backgroundColor: '#ffffff',
+                border: '1px solid #e2e8f0',
             }}
         >
             {children}
@@ -54,7 +54,7 @@ interface CardTitleProps {
 
 export function CardTitle({ children, className }: CardTitleProps) {
     return (
-        <h3 className={clsx('text-lg font-semibold text-white', className)}>
+        <h3 className={clsx('text-lg font-semibold text-slate-800', className)}>
             {children}
         </h3>
     )
@@ -67,7 +67,7 @@ interface CardDescriptionProps {
 
 export function CardDescription({ children, className }: CardDescriptionProps) {
     return (
-        <p className={clsx('text-sm text-gray-500 dark:text-gray-400 mt-1', className)}>
+        <p className={clsx('text-sm text-gray-500 mt-1', className)}>
             {children}
         </p>
     )
@@ -95,7 +95,7 @@ export function CardFooter({ children, className }: CardFooterProps) {
     return (
         <div
             className={clsx('mt-4 pt-4 border-t', className)}
-            style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+            style={{ borderColor: '#e2e8f0' }}
         >
             {children}
         </div>

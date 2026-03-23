@@ -152,7 +152,7 @@ export default function SettingsPage() {
     const renderProfileTab = () => (
         <div className="space-y-6">
             <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações do Perfil</h3>
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">Informações do Perfil</h3>
                 <form onSubmit={handleProfileSubmit} className="space-y-4">
                     {profileError && (
                         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3">
@@ -187,10 +187,10 @@ export default function SettingsPage() {
 
                     <div className="flex items-center gap-4">
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Função</label>
-                            <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Função</label>
+                            <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
                                 <RoleBadge role={profile?.role || 'leitor'} />
-                                <span className="text-gray-600 dark:text-gray-400 text-sm">
+                                <span className="text-slate-600 text-sm">
                                     {profile?.role === 'superadmin' && 'Acesso total ao sistema'}
                                     {profile?.role === 'admin_municipal' && 'Administração municipal'}
                                     {profile?.role === 'tecnico' && 'Gestão de conteúdo'}
@@ -202,8 +202,8 @@ export default function SettingsPage() {
 
                     {profile?.municipio && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Município</label>
-                            <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Município</label>
+                            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-slate-800">
                                 {profile.municipio.name}
                             </div>
                         </div>
@@ -226,7 +226,7 @@ export default function SettingsPage() {
     const renderSecurityTab = () => (
         <div className="space-y-6">
             <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Alterar Palavra-passe</h3>
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">Alterar Palavra-passe</h3>
                 <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     {passwordError && (
                         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3">
@@ -281,8 +281,8 @@ export default function SettingsPage() {
                 </form>
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-800 pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sessões Ativas</h3>
+            <div className="border-t border-slate-200 pt-6">
+                <h3 className="text-lg font-semibold text-slate-800 mb-4">Sessões Ativas</h3>
                 <Card className="p-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -290,8 +290,8 @@ export default function SettingsPage() {
                                 <Shield className="w-5 h-5 text-emerald-400" />
                             </div>
                             <div>
-                                <p className="text-gray-900 dark:text-white font-medium">Sessão Atual</p>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm">Navegador • {new Date().toLocaleDateString('pt-PT')}</p>
+                                <p className="text-slate-800 font-medium">Sessão Atual</p>
+                                <p className="text-slate-500 text-sm">Navegador • {new Date().toLocaleDateString('pt-PT')}</p>
                             </div>
                         </div>
                         <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">
@@ -306,7 +306,7 @@ export default function SettingsPage() {
     const renderNotificationsTab = () => (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Preferências de Notificações</h3>
+                <h3 className="text-lg font-semibold text-slate-800">Preferências de Notificações</h3>
                 {notifSaved && (
                     <span className="text-emerald-500 dark:text-emerald-400 text-sm flex items-center gap-1">
                         <Check className="w-4 h-4" /> Guardado
@@ -315,12 +315,12 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div className="flex items-center gap-3">
-                        <Mail className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <Mail className="w-5 h-5 text-slate-500" />
                         <div>
-                            <p className="text-gray-900 dark:text-white font-medium">Notificações por Email</p>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm">Receber atualizações por email</p>
+                            <p className="text-slate-800 font-medium">Notificações por Email</p>
+                            <p className="text-slate-500 text-sm">Receber atualizações por email</p>
                         </div>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -330,16 +330,16 @@ export default function SettingsPage() {
                             onChange={(e) => handleNotificationChange('email_notifications', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                     </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div className="flex items-center gap-3">
-                        <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <Bell className="w-5 h-5 text-slate-500" />
                         <div>
-                            <p className="text-gray-900 dark:text-white font-medium">Novos Uploads</p>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm">Notificar quando novos ficheiros forem carregados</p>
+                            <p className="text-slate-800 font-medium">Novos Uploads</p>
+                            <p className="text-slate-500 text-sm">Notificar quando novos ficheiros forem carregados</p>
                         </div>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -349,16 +349,16 @@ export default function SettingsPage() {
                             onChange={(e) => handleNotificationChange('upload_notifications', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                     </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                     <div className="flex items-center gap-3">
-                        <Shield className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <Shield className="w-5 h-5 text-slate-500" />
                         <div>
-                            <p className="text-gray-900 dark:text-white font-medium">Alertas de Segurança</p>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm">Receber alertas sobre atividades suspeitas</p>
+                            <p className="text-slate-800 font-medium">Alertas de Segurança</p>
+                            <p className="text-slate-500 text-sm">Receber alertas sobre atividades suspeitas</p>
                         </div>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -368,7 +368,7 @@ export default function SettingsPage() {
                             onChange={(e) => handleNotificationChange('security_alerts', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                     </label>
                 </div>
             </div>
@@ -377,35 +377,34 @@ export default function SettingsPage() {
 
     const renderAppearanceTab = () => (
         <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Aparência</h3>
+            <h3 className="text-lg font-semibold text-slate-800 mb-4">Aparência</h3>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Tema</label>
-                <div className="grid grid-cols-3 gap-3">
-                    {(['dark', 'light', 'system'] as const).map((t) => (
+                <label className="block text-sm font-medium text-slate-700 mb-3">Tema</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {(['light'] as const).map((t) => (
                         <button
                             key={t}
                             type="button"
                             onClick={() => setTheme(t)}
                             className={`p-4 rounded-lg border-2 transition-all ${theme === t
                                 ? 'border-blue-500 bg-blue-500/10'
-                                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 hover:border-gray-300 dark:hover:border-gray-600'
+                                : 'border-slate-200 bg-white hover:border-slate-300'
                                 }`}
                         >
-                            <div className={`w-full h-16 rounded mb-2 border border-gray-200 dark:border-gray-700 ${t === 'dark' ? 'bg-gray-900' : t === 'light' ? 'bg-white' : 'bg-gradient-to-r from-gray-900 to-white'
-                                }`} />
-                            <p className="text-gray-900 dark:text-white text-sm font-medium capitalize">
-                                {t === 'dark' ? 'Escuro' : t === 'light' ? 'Claro' : 'Sistema'}
+                            <div className="w-full h-16 rounded mb-2 border border-gray-200 bg-white" />
+                            <p className="text-slate-800 text-sm font-medium capitalize">
+                                Claro
                             </p>
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div>
-                    <p className="text-gray-900 dark:text-white font-medium">Modo Compacto</p>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">Reduzir espaçamento para ver mais conteúdo</p>
+                    <p className="text-slate-800 font-medium">Modo Compacto</p>
+                    <p className="text-slate-500 text-sm">Reduzir espaçamento para ver mais conteúdo</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -414,7 +413,7 @@ export default function SettingsPage() {
                         onChange={(e) => setCompactMode(e.target.checked)}
                         className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                 </label>
             </div>
         </div>
@@ -422,15 +421,15 @@ export default function SettingsPage() {
 
     const renderSystemTab = () => (
         <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Configurações do Sistema</h3>
-            <p className="text-gray-400">Apenas disponível para Superadministradores</p>
+            <h3 className="text-lg font-semibold text-slate-800 mb-4">Configurações do Sistema</h3>
+            <p className="text-slate-500">Apenas disponível para Superadministradores</p>
 
             <div className="grid gap-4">
                 <Card className="p-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h4 className="text-gray-900 dark:text-white font-medium">Informações do Sistema</h4>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">GPCS Media System v1.0.0</p>
+                            <h4 className="text-slate-800 font-medium">Informações do Sistema</h4>
+                            <p className="text-slate-500 text-sm mt-1">GPCS Media System v1.0.0</p>
                         </div>
                         <span className="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-xs rounded-full">
                             Online
@@ -439,51 +438,51 @@ export default function SettingsPage() {
                 </Card>
 
                 <Card className="p-4">
-                    <h4 className="text-gray-900 dark:text-white font-medium mb-3">Base de Dados</h4>
+                    <h4 className="text-slate-800 font-medium mb-3">Base de Dados</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Fornecedor</p>
-                            <p className="text-gray-900 dark:text-white">Supabase (PostgreSQL)</p>
+                            <p className="text-slate-500">Fornecedor</p>
+                            <p className="text-slate-800">Supabase (PostgreSQL)</p>
                         </div>
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Região</p>
-                            <p className="text-gray-900 dark:text-white">EU West</p>
+                            <p className="text-slate-500">Região</p>
+                            <p className="text-slate-800">EU West</p>
                         </div>
                     </div>
                 </Card>
 
                 <Card className="p-4">
-                    <h4 className="text-gray-900 dark:text-white font-medium mb-3">Armazenamento</h4>
+                    <h4 className="text-slate-800 font-medium mb-3">Armazenamento</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Serviço</p>
-                            <p className="text-gray-900 dark:text-white">Supabase Storage</p>
+                            <p className="text-slate-500">Serviço</p>
+                            <p className="text-slate-800">Supabase Storage</p>
                         </div>
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Bucket</p>
-                            <p className="text-gray-900 dark:text-white">media-archive</p>
+                            <p className="text-slate-500">Bucket</p>
+                            <p className="text-slate-800">media-archive</p>
                         </div>
                     </div>
                 </Card>
 
                 <Card className="p-4">
-                    <h4 className="text-gray-900 dark:text-white font-medium mb-3">Licença</h4>
+                    <h4 className="text-slate-800 font-medium mb-3">Licença</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Tipo</p>
-                            <p className="text-gray-900 dark:text-white">Institucional</p>
+                            <p className="text-slate-500">Tipo</p>
+                            <p className="text-slate-800">Institucional</p>
                         </div>
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Validade</p>
-                            <p className="text-gray-900 dark:text-white">Ilimitada</p>
+                            <p className="text-slate-500">Validade</p>
+                            <p className="text-slate-800">Ilimitada</p>
                         </div>
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Organização</p>
-                            <p className="text-gray-900 dark:text-white">Gabinete Provincial de Comunicação Social</p>
+                            <p className="text-slate-500">Organização</p>
+                            <p className="text-slate-800">Gabinete Provincial de Comunicação Social</p>
                         </div>
                         <div>
-                            <p className="text-gray-500 dark:text-gray-400">Província</p>
-                            <p className="text-gray-900 dark:text-white">Huíla</p>
+                            <p className="text-slate-500">Província</p>
+                            <p className="text-slate-800">Huíla</p>
                         </div>
                     </div>
                 </Card>
@@ -493,14 +492,14 @@ export default function SettingsPage() {
                         <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                         <div>
                             <h4 className="text-amber-400 font-medium">Zona de Administração</h4>
-                            <p className="text-gray-400 text-sm mt-1">
+                            <p className="text-slate-500 text-sm mt-1">
                                 As configurações avançadas do sistema podem ser acedidas através do painel do Supabase.
                             </p>
                             <a
                                 href="https://supabase.com/dashboard"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-400 hover:text-blue-300 text-sm mt-2 inline-block"
+                                className="text-blue-700 hover:text-blue-800 text-sm mt-2 inline-block"
                             >
                                 Abrir Dashboard Supabase →
                             </a>
@@ -531,7 +530,7 @@ export default function SettingsPage() {
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${activeTab === tab.id
                                             ? 'bg-blue-600/20 text-blue-500 dark:text-blue-400 border-l-2 border-blue-500'
-                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                                            : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100'
                                             }`}
                                     >
                                         <Icon className="w-5 h-5" />

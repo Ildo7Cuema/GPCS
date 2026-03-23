@@ -50,7 +50,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <MobileMenuContext.Provider value={{ openMobileMenu }}>
             <div
                 className="min-h-screen transition-colors duration-300"
-                style={{ backgroundColor: '#0f172a', color: '#f1f5f9' }}
+                style={{
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+                    color: '#1e293b',
+                }}
             >
                 {/* Mobile backdrop */}
                 <div
